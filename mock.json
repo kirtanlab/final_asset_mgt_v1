@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "status": true,
+    "category_name": "Hendrick",
+    "category_desc": "Belmonte Airport"
+  },
+  { "id": 2, "status": true, "category_name": "Corey", "category_desc": "Cooktown Airport" },
+  {
+    "id": 3,
+    "status": true,
+    "category_name": "Steve",
+    "category_desc": "Five Mile Airport"
+  },
+  {
+    "id": 4,
+    "status": true,
+    "category_name": "Jennine",
+    "category_desc": "Simon Mwansa Kapwepwe International Airport"
+  },
+  {
+    "id": 5,
+    "status": false,
+    "category_name": "Emelen",
+    "category_desc": "Croker Island Airport"
+  },
+  {
+    "id": 6,
+    "status": false,
+    "category_name": "Lilllie",
+    "category_desc": "Wewak International Airport"
+  },
+  { "id": 7, "status": true, "category_name": "Duane", "category_desc": "Ramon Air Base" },
+  { "id": 8, "status": true, "category_name": "Petra", "category_desc": "Cortina Airport" },
+  {
+    "id": 9,
+    "status": true,
+    "category_name": "Goldie",
+    "category_desc": "St.Louis Lambert International Airport"
+  },
+  { "id": 10, "status": false, "category_name": "Gusta", "category_desc": "Ustupo Airport" }
+]

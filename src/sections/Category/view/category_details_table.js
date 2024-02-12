@@ -18,33 +18,35 @@ import CategoryDetailsTable from '../CategoryDetailsTable';
 export default function AssetCategoryList() {
   const [AllCategory, setAllCategories] = useState([]);
   const settings = useSettingsContext();
-  const getCategoryQuery = useQuery({
+  const {
+    data: getAllCategoryData,
+    error: getAllCategoryError,
+    isLoading: getAllCategoryLoading,
+  } = useQuery({
     queryKey: ['AllCategory'],
     queryFn: getAllCategories,
   });
-  if (getCategoryQuery.status === 'loading') {
-    console.log('Loading category');
+
+  if (getAllCategoryLoading) {
+    return <h1>Loading...</h1>;
   }
-  if (getCategoryQuery.status === 'error') {
-    console.log('Error', JSON.stringify(getCategoryQuery.error));
-  }
-  if (getCategoryQuery.status === 'success') {
-    setAllCategories(getCategoryQuery.data);
+  if (getAllCategoryError || getAllCategoryData === undefined) {
+    return <h1>Error</h1>;
   }
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Typography variant="h4"> Assets Category Master </Typography>
-      <Grid xs={12} marginTop={7} maxWidth={1200}>
+      <Grid xs={12} marginTop={2}>
         <CategoryDetailsTable
           title="Assets Categories Details"
-          Categories_Data={AllCategory}
+          Categories_Data={getAllCategoryData.data}
           tableLabels={[
             { id: 'id', label: 'ID' },
             { id: 'category_name', label: 'Category name' },
             { id: 'category_description', label: 'Category Description' },
             { id: 'status', label: 'Status' },
-            { id: '', label: '' },
+            { id: 'options', label: 'Options' },
           ]}
         />
       </Grid>

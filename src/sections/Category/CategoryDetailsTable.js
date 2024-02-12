@@ -79,8 +79,8 @@ export default function CategoryDetailsTable({ title, tableLabels, Categories_Da
     <Card>
       <Grid container alignItems="center" flexDirection="row">
         <CardHeader title={title} subheader={subheader} sx={{ flex: 1 }} />
-        <Stack sx={{ paddingTop: 3, flexDirection: 'row', flex: 1, marginRight: 6 }}>
-          <Stack sx={{ width: '100%', paddingRight: 2 }}>
+        <Stack sx={{ paddingTop: 3, flexDirection: 'row', flex: 2 }}>
+          <Stack sx={{ width: '70%', paddingRight: 2 }}>
             <TextField
               value={filters.name}
               onChange={handleFilterName}
@@ -92,12 +92,12 @@ export default function CategoryDetailsTable({ title, tableLabels, Categories_Da
                   </InputAdornment>
                 ),
               }}
-              sx={{ width: '100%' }}
+              sx={{}}
             />
           </Stack>
 
           <Button
-            sx={{ pt: 2, width: 200 }}
+            sx={{ pt: 2 }}
             size="medium"
             color="inherit"
             onClick={() => {
@@ -114,7 +114,7 @@ export default function CategoryDetailsTable({ title, tableLabels, Categories_Da
           <TableSelectedAction
             dense={table.dense}
             numSelected={table.selected.length}
-            rowCount={tableData.length}
+            rowCount={tableData?.length}
             onSelectAllRows={(checked) =>
               table.onSelectAllRows(
                 checked,
@@ -132,7 +132,7 @@ export default function CategoryDetailsTable({ title, tableLabels, Categories_Da
             }
           />
           <Scrollbar>
-            <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+            <Table size={table.dense ? 'medium' : 'small'} sx={{ minWidth: 960 }}>
               <TableHeadCustom
                 headLabel={tableLabels}
                 order={table.order}
