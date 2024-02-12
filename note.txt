@@ -1,0 +1,2 @@
+--> loading js/css before rendering the landing page
+--> study kanban
