@@ -3,6 +3,7 @@ import 'simplebar-react/dist/simplebar.min.css';
 
 // image
 import 'react-lazy-load-image-component/src/effects/blur.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // ----------------------------------------------------------------------
 
@@ -36,28 +37,38 @@ export default function App() {
 
   useScrollToTop();
 
+  const defaultOptions = {
+    queries: {
+      retry: 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  };
+  const _QueryClient = new QueryClient({ defaultOptions });
+
   return (
-    <AuthProvider>
-      <SettingsProvider
-        defaultSettings={{
-          themeMode: 'light', // 'light' | 'dark'
-          themeDirection: 'ltr', //  'rtl' | 'ltr'
-          themeContrast: 'default', // 'default' | 'bold'
-          themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-          themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-          themeStretch: false,
-        }}
-      >
-        <ThemeProvider>
-          <MotionLazy>
-            <SettingsDrawer />
-            <ProgressBar />
-            <AuthConsumer>
-              <Router />
-            </AuthConsumer>
-          </MotionLazy>
-        </ThemeProvider>
-      </SettingsProvider>
-    </AuthProvider>
+    <QueryClientProvider client={_QueryClient}>
+      <AuthProvider>
+        <SettingsProvider
+          defaultSettings={{
+            themeMode: 'light', // 'light' | 'dark'
+            themeDirection: 'ltr', //  'rtl' | 'ltr'
+            themeContrast: 'default', // 'default' | 'bold'
+            themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
+            themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+            themeStretch: false,
+          }}
+        >
+          <ThemeProvider>
+            <MotionLazy>
+              <SettingsDrawer />
+              <ProgressBar />
+              <AuthConsumer>
+                <Router />
+              </AuthConsumer>
+            </MotionLazy>
+          </ThemeProvider>
+        </SettingsProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
