@@ -18,3 +18,8 @@ export async function updateCategory(categoryData) {
 export async function deleteCategoryWithId(categoryId) {
   return axios.delete(`${BACKEND_CALL_URL}/category/${categoryId}`).then((res) => res.data);
 }
+export async function deleteCategoryWithIds(categoryIds) {
+  return axios
+    .delete(`${BACKEND_CALL_URL}/category/deleteSelected`, { data: categoryIds })
+    .then((res) => res.data);
+}

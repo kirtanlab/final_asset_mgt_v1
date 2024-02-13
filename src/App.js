@@ -37,13 +37,13 @@ export default function App() {
 
   useScrollToTop();
 
-  const defaultOptions = {
-    queries: {
-      retry: 1,
-      staleTime: 1000 * 60 * 5, // 5 minutes
-    },
-  };
-  const _QueryClient = new QueryClient({ defaultOptions });
+  // const defaultOptions = {
+  //   queries: {
+  //     retry: Infinity,
+  //     staleTime: Infinity, // 30 seconds
+  //   },
+  // };
+  const _QueryClient = new QueryClient({});
 
   return (
     <QueryClientProvider client={_QueryClient}>

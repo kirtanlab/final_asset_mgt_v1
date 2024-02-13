@@ -16,7 +16,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import CustomDialog from 'src/components/Dialog/dialog';
-import { useDeleteCategoryWithId } from 'src/queries/CategoryQueries';
+import { useDeleteCategoryWithId, useDeleteCategoryWithIds } from 'src/queries/CategoryQueries';
 
 import EditCategories from './editCategories';
 
@@ -37,7 +37,8 @@ const CategoryDetailsTableRow = ({
   const [editCategory, setEditCategory] = useState(false);
   const popover = usePopover();
   const rowConfirm = useBoolean();
-  console.log('assets status', row.status);
+  const deleteCategoryWithIds = useDeleteCategoryWithIds();
+  // console.log('assets status', row.status);
   return (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
@@ -152,10 +153,21 @@ const CategoryDetailsTableRow = ({
           <Button
             variant="contained"
             color="error"
-            onClick={() => {
-              alert('Deleted');
-              // handleDeleteRows();
-              confirm.onFalse();
+            onClick={async () => {
+              try {
+                const obj = {
+                  ids: table.selected,
+                };
+                console.log('obj', obj);
+                await deleteCategoryWithIds.mutateAsync(obj);
+                confirm.onFalse();
+                table.setSelected([]);
+              } catch (error) {
+                alert('Check your internet connectivity');
+                console.log('error in handleSubmit of delete Categories');
+                console.log('error: ', error);
+                confirm.onFalse();
+              }
             }}
           >
             Delete

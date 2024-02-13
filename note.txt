@@ -4,3 +4,4 @@
 --> autoHide dialog
 --> styling at different size of desktop
 --> autoSort the data after completion editing
+--> add proper messages in toast for submit, edit, delete, deleteselected

@@ -78,7 +78,7 @@ function EditCategories({ row }) {
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid xs={12} md={10}>
-        <Card sx={{ p: 3 }}>
+        <Card sx={{ p: 3, height: 340, position: 'relative' }}>
           <Box
             rowGap={3}
             columnGap={2}
@@ -109,28 +109,32 @@ function EditCategories({ row }) {
               }}
             />
           </Box>
-          {updateCategoryMutation.isSuccess && (
-            <Alert severity="success" sx={{ mt: 3 }}>
-              <AlertTitle>Success</AlertTitle>
-              Category has been added!
-            </Alert>
-          )}
-          {updateCategoryMutation.isError && (
-            <Alert severity="error" sx={{ mt: 3 }}>
-              <AlertTitle>Error</AlertTitle>
-              Something went wrong!
-            </Alert>
-          )}
 
-          <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-            <LoadingButton
-              type="submit"
-              variant="contained"
-              loading={updateCategoryMutation.isLoading}
-            >
-              Add Category
-            </LoadingButton>
-          </Stack>
+          {/* New Box wrapper for success and error messages, and LoadingButton */}
+          <Box position="absolute" bottom={0} left={0} right={0} p={3}>
+            {updateCategoryMutation.isSuccess && (
+              <Alert severity="success">
+                <AlertTitle>Success</AlertTitle>
+                Category has been added!
+              </Alert>
+            )}
+            {updateCategoryMutation.isError && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                <AlertTitle>Error</AlertTitle>
+                Something went wrong!
+              </Alert>
+            )}
+
+            <Stack alignItems="flex-end" sx={{ mt: 2 }}>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                loading={updateCategoryMutation.isLoading}
+              >
+                Edit Category
+              </LoadingButton>
+            </Stack>
+          </Box>
         </Card>
       </Grid>
     </FormProvider>
