@@ -28,7 +28,7 @@ function CustomDialog({ openFlag, setonClose, placeHolder, component }) {
         [`& .${dialogClasses.container}`]: {
           alignItems: 'flex-start',
         },
-        mt: 20,
+        mt: 15,
       }}
     >
       <Box sx={{ p: 1, borderBottom: `solid 1px ${theme.palette.divider}` }}>
@@ -39,7 +39,7 @@ function CustomDialog({ openFlag, setonClose, placeHolder, component }) {
           <Label sx={{ letterSpacing: 1, color: 'text.secondary' }}>esc</Label>
         </Stack>
       </Box>
-      <Stack sx={{ p: 3, pt: 2, height: 270, width: '100%' }}>{component}</Stack>
+      <Stack sx={{ p: 3, pt: 2, height: 380, width: '100%' }}>{component}</Stack>
     </Dialog>
   );
 }

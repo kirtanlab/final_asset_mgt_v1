@@ -1,2 +1,6 @@
 --> loading js/css before rendering the landing page
---> study kanban
+--> study kanBan
+--> search with id
+--> autoHide dialog
+--> styling at different size of desktop
+--> autoSort the data after completion editing

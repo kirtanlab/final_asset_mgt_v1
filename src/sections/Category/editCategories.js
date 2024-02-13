@@ -8,11 +8,12 @@ import FormProvider from 'src/components/hook-form/form-provider';
 import { Alert, AlertTitle, Box, Card, Grid, Stack } from '@mui/material';
 import { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { LoadingButton } from '@mui/lab';
+import { useUpdateCategory } from 'src/queries/CategoryQueries';
 // components
 
 function EditCategories({ row }) {
   const [done, setDone] = useState(false);
-
+  const updateCategoryMutation = useUpdateCategory();
   const NewCategorySchema = Yup.object().shape({
     category_name: Yup.string().max(50).required('Category Name is required'),
     category_desc: Yup.string().max(250).required('Description is required'),
@@ -41,7 +42,13 @@ function EditCategories({ row }) {
   } = methods;
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log('data', data);
+      const obj = {
+        id: row.id,
+        category_name: data.category_name,
+        status: data.status === 'ACTIVE',
+        category_desc: data.category_desc,
+      };
+      await updateCategoryMutation.mutateAsync(obj);
     } catch (error) {
       alert('Check your internet connectivity');
       console.log('error in handleSubmit of Add Categories');
@@ -53,7 +60,9 @@ function EditCategories({ row }) {
       try {
         setValue('category_name', rowData?.category_name, { shouldValidate: true });
         setValue('category_desc', rowData?.category_desc, { shouldValidate: true });
-        setValue('status', rowData?.status, { shouldValidate: true });
+        setValue('status', rowData?.status === true ? 'ACTIVE' : 'INACTIVE', {
+          shouldValidate: true,
+        });
       } catch (err) {
         alert('Check your internet connectivity');
         console.log('error in handleSubmit of Add Categories');
@@ -100,15 +109,25 @@ function EditCategories({ row }) {
               }}
             />
           </Box>
-          {done && (
-            <Alert severity="success">
+          {updateCategoryMutation.isSuccess && (
+            <Alert severity="success" sx={{ mt: 3 }}>
               <AlertTitle>Success</AlertTitle>
               Category has been added!
             </Alert>
           )}
+          {updateCategoryMutation.isError && (
+            <Alert severity="error" sx={{ mt: 3 }}>
+              <AlertTitle>Error</AlertTitle>
+              Something went wrong!
+            </Alert>
+          )}
 
           <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-            <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              loading={updateCategoryMutation.isLoading}
+            >
               Add Category
             </LoadingButton>
           </Stack>

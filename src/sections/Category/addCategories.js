@@ -8,11 +8,13 @@ import FormProvider from 'src/components/hook-form/form-provider';
 import { Alert, AlertTitle, Box, Card, Grid, Stack } from '@mui/material';
 import { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { LoadingButton } from '@mui/lab';
+import { useCreateCategory, useGetAllCategories } from 'src/queries/CategoryQueries';
 // components
 
 function AddCategories() {
   const [done, setDone] = useState(false);
-
+  const createCategoryMutation = useCreateCategory();
+  const getAllCategories = useGetAllCategories();
   const NewCategorySchema = Yup.object().shape({
     category_name: Yup.string().max(50).required('Category Name is required'),
     category_desc: Yup.string().max(250).required('Description is required'),
@@ -41,7 +43,12 @@ function AddCategories() {
   } = methods;
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log('data', data);
+      const obj = {
+        category_name: data.category_name,
+        status: data.status === 'ACTIVE',
+        category_desc: data.category_desc,
+      };
+      await createCategoryMutation.mutateAsync(obj);
     } catch (error) {
       alert('Check your internet connectivity');
       console.log('error in handleSubmit of Add Categories');
@@ -82,15 +89,25 @@ function AddCategories() {
               }}
             />
           </Box>
-          {done && (
-            <Alert severity="success">
+          {createCategoryMutation.isSuccess && (
+            <Alert severity="success" sx={{ mt: 3 }}>
               <AlertTitle>Success</AlertTitle>
               onSubmit Category has been added!
             </Alert>
           )}
+          {createCategoryMutation.isError && (
+            <Alert severity="error" sx={{ mt: 3 }}>
+              <AlertTitle>Error</AlertTitle>
+              Something went wrong!
+            </Alert>
+          )}
 
           <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-            <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              loading={createCategoryMutation.isLoading}
+            >
               Add Category
             </LoadingButton>
           </Stack>

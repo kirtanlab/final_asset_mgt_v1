@@ -10,22 +10,18 @@ import { useQuery } from '@tanstack/react-query';
 // components
 import { mock_tableData } from 'src/_mock/_tableData';
 import { useSettingsContext } from 'src/components/settings';
-import { getAllCategories } from 'src/queries/CategoryQueries';
+import { useGetAllCategories } from 'src/queries/CategoryQueries';
 import CategoryDetailsTable from '../CategoryDetailsTable';
 
 // ----------------------------------------------------------------------
 
 export default function AssetCategoryList() {
-  const [AllCategory, setAllCategories] = useState([]);
   const settings = useSettingsContext();
   const {
     data: getAllCategoryData,
     error: getAllCategoryError,
     isLoading: getAllCategoryLoading,
-  } = useQuery({
-    queryKey: ['AllCategory'],
-    queryFn: getAllCategories,
-  });
+  } = useGetAllCategories();
 
   if (getAllCategoryLoading) {
     return <h1>Loading...</h1>;

@@ -36,14 +36,20 @@ import CustomDialog from 'src/components/Dialog/dialog';
 import CategoryDetailsTableRow from './CategoryDetailsTableRow';
 import AddCategories from './addCategories';
 
-export default function CategoryDetailsTable({ title, tableLabels, Categories_Data, subheader }) {
+export default function CategoryDetailsTable({
+  title,
+  tableLabels,
+  Categories_Data: tableData,
+  subheader,
+}) {
   const defaultFilters = {
     category_name: '',
   };
+
   const [filters, setFilters] = useState(defaultFilters);
   const table = useTable({ defaultOrderBy: 'createDate' });
   const confirm = useBoolean();
-  const [tableData, setTableData] = useState(Categories_Data);
+
   const [addCategory, setAddCategory] = useState(false);
   const dataFiltered = tableData
     ? applyFilter({
@@ -84,7 +90,7 @@ export default function CategoryDetailsTable({ title, tableLabels, Categories_Da
             <TextField
               value={filters.name}
               onChange={handleFilterName}
-              placeholder="Search categories name or description ..."
+              placeholder="Search id / categories name / description ..."
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -132,7 +138,7 @@ export default function CategoryDetailsTable({ title, tableLabels, Categories_Da
             }
           />
           <Scrollbar>
-            <Table size={table.dense ? 'medium' : 'small'} sx={{ minWidth: 960 }}>
+            <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
               <TableHeadCustom
                 headLabel={tableLabels}
                 order={table.order}
@@ -218,7 +224,8 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter(
       (category) =>
         category.category_name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        category.category_desc.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        category.category_desc.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        category.id.toString().toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
 

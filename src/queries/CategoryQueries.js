@@ -1,6 +1,44 @@
-import axios from 'axios';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  createNewCategory,
+  deleteCategoryWithId,
+  getAllCategories,
+  updateCategory,
+} from 'src/apis/CategoryApis';
 
-const BACKEND_CALL_URL = 'http://localhost:8080/api/v1';
-export async function getAllCategories() {
-  return axios.get(`${BACKEND_CALL_URL}/category/`).then((res) => res.data);
-}
+export const useGetAllCategories = () => useQuery(['AllCategory'], getAllCategories);
+
+export const useCreateCategory = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(createNewCategory, {
+    onSuccess: () => {
+      queryClient.refetchQueries(['AllCategory']);
+    },
+  });
+
+  return mutation;
+};
+
+export const useUpdateCategory = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(updateCategory, {
+    onSuccess: () => {
+      queryClient.refetchQueries(['AllCategory']);
+    },
+  });
+
+  return mutation;
+};
+
+export const useDeleteCategoryWithId = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(deleteCategoryWithId, {
+    onSuccess: () => {
+      queryClient.refetchQueries(['AllCategory']);
+    },
+  });
+  return mutation;
+};

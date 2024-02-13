@@ -16,6 +16,8 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import CustomDialog from 'src/components/Dialog/dialog';
+import { useDeleteCategoryWithId } from 'src/queries/CategoryQueries';
+
 import EditCategories from './editCategories';
 
 // import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -31,7 +33,7 @@ const CategoryDetailsTableRow = ({
   confirm,
 }) => {
   const theme = useTheme();
-
+  const deleteCategoryWithId = useDeleteCategoryWithId();
   const [editCategory, setEditCategory] = useState(false);
   const popover = usePopover();
   const rowConfirm = useBoolean();
@@ -77,7 +79,7 @@ const CategoryDetailsTableRow = ({
       </TableCell>
       <TableCell width={100}>
         <ListItemText
-          primary={row?.status === true ? 'true' : 'false'}
+          primary={row?.status === true ? 'Active' : 'Inactive'}
           primaryTypographyProps={{ typography: 'body2', noWrap: true }}
           secondaryTypographyProps={{
             mt: 0.5,
@@ -169,8 +171,15 @@ const CategoryDetailsTableRow = ({
           <Button
             variant="contained"
             color="error"
-            onClick={() => {
-              rowConfirm.onFalse();
+            onClick={async () => {
+              try {
+                await deleteCategoryWithId.mutateAsync(row.id);
+                rowConfirm.onFalse();
+              } catch (error) {
+                alert('Check your internet connectivity');
+                console.log('error in handleSubmit of Add Categories');
+                console.log('error: ', error);
+              }
             }}
           >
             Delete

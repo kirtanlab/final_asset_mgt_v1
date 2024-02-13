@@ -1,0 +1,20 @@
+import axios from 'axios';
+
+const BACKEND_CALL_URL = 'http://localhost:8080/api/v1';
+
+export async function getAllCategories() {
+  return axios.get(`${BACKEND_CALL_URL}/category/`).then((res) => res.data);
+}
+export async function createNewCategory(categoryData) {
+  return axios
+    .post(`${BACKEND_CALL_URL}/category/CreateCategory/`, categoryData)
+    .then((res) => res.data);
+}
+export async function updateCategory(categoryData) {
+  return axios
+    .put(`${BACKEND_CALL_URL}/category/updateCategory`, categoryData)
+    .then((res) => res.data);
+}
+export async function deleteCategoryWithId(categoryId) {
+  return axios.delete(`${BACKEND_CALL_URL}/category/${categoryId}`).then((res) => res.data);
+}

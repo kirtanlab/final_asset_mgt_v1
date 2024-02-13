@@ -19,7 +19,7 @@ import MotionLazy from 'src/components/animate/motion-lazy';
 import { SettingsProvider, SettingsDrawer } from 'src/components/settings';
 // auth
 import { AuthProvider, AuthConsumer } from 'src/auth/context/jwt';
-
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -69,6 +69,7 @@ export default function App() {
           </ThemeProvider>
         </SettingsProvider>
       </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }
