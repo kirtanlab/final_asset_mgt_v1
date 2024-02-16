@@ -60,27 +60,14 @@ export function useNavData() {
             icon: ICONS.booking,
           },
           {
-            title: 'three',
-            path: paths.dashboard.three,
+            title: 'Locations',
+            path: paths.dashboard.Locations,
             icon: ICONS.analytics,
           },
-        ],
-      },
-
-      // MANAGEMENT
-      // ----------------------------------------------------------------------
-      {
-        subheader: 'management',
-        items: [
           {
-            title: 'user',
-            path: paths.dashboard.group.root,
-            icon: ICONS.user,
-            children: [
-              { title: 'four', path: paths.dashboard.group.root },
-              { title: 'five', path: paths.dashboard.group.five },
-              { title: 'six', path: paths.dashboard.group.six },
-            ],
+            title: 'Employees',
+            path: paths.dashboard.Employees,
+            icon: ICONS.chat,
           },
         ],
       },

@@ -17,7 +17,7 @@ export default function AssetTypeList() {
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Typography variant="h4"> Assets Type Master </Typography>
 
-      <Grid xs={12} marginTop={7} maxWidth={1200}>
+      <Grid xs={12} marginTop={2} maxWidth={1200}>
         <TypesDetailsTable
           title="Assets Types Details"
           Categories_Data={mock_types_data}

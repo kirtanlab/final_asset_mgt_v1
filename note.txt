@@ -4,4 +4,5 @@
 --> autoHide dialog
 --> styling at different size of desktop
 --> autoSort the data after completion editing
---> add proper messages in toast for submit, edit, delete, deleteselected
+--> add proper messages in toast for submit, edit, delete, deleteSelected
+--> Logo.js for Changing Logo /home/kirtan/Documents/elecon/asset_mgt_frontend/src/components/logo/logo.js

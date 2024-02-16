@@ -17,7 +17,7 @@ export default function AssetClassesList() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Typography variant="h4"> Assets Category Master </Typography>
-      <Grid xs={12} marginTop={7} maxWidth={1200}>
+      <Grid xs={12} marginTop={2} maxWidth={1200}>
         <ClassificationsDetailsTableRow
           title="Assets Classifications Details"
           Classes_Data={mock_classifications_data}

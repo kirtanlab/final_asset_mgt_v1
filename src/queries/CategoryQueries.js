@@ -9,9 +9,9 @@ import {
 
 export const useGetAllCategories = () =>
   useQuery(['AllCategory'], getAllCategories, {
-    retry: Infinity,
+    retry: 1,
     refetchOnReconnect: 'always',
-    refetchInterval: 1000 * 60 * 0.5,
+    refetchInterval: 1000 * 60 * 0.2,
   });
 
 export const useCreateCategory = () => {

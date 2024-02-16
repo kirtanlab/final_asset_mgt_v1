@@ -20,6 +20,7 @@ import { SettingsProvider, SettingsDrawer } from 'src/components/settings';
 // auth
 import { AuthProvider, AuthConsumer } from 'src/auth/context/jwt';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { CategoryProvider } from './context/CategoryContext';
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -47,29 +48,31 @@ export default function App() {
 
   return (
     <QueryClientProvider client={_QueryClient}>
-      <AuthProvider>
-        <SettingsProvider
-          defaultSettings={{
-            themeMode: 'light', // 'light' | 'dark'
-            themeDirection: 'ltr', //  'rtl' | 'ltr'
-            themeContrast: 'default', // 'default' | 'bold'
-            themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-            themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-            themeStretch: false,
-          }}
-        >
-          <ThemeProvider>
-            <MotionLazy>
-              <SettingsDrawer />
-              <ProgressBar />
-              <AuthConsumer>
-                <Router />
-              </AuthConsumer>
-            </MotionLazy>
-          </ThemeProvider>
-        </SettingsProvider>
-      </AuthProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      <CategoryProvider>
+        <AuthProvider>
+          <SettingsProvider
+            defaultSettings={{
+              themeMode: 'light', // 'light' | 'dark'
+              themeDirection: 'ltr', //  'rtl' | 'ltr'
+              themeContrast: 'default', // 'default' | 'bold'
+              themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
+              themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+              themeStretch: false,
+            }}
+          >
+            <ThemeProvider>
+              <MotionLazy>
+                <SettingsDrawer />
+                <ProgressBar />
+                <AuthConsumer>
+                  <Router />
+                </AuthConsumer>
+              </MotionLazy>
+            </ThemeProvider>
+          </SettingsProvider>
+        </AuthProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </CategoryProvider>
     </QueryClientProvider>
   );
 }

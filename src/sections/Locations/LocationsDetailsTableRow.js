@@ -16,13 +16,9 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import CustomDialog from 'src/components/Dialog/dialog';
-import { useDeleteCategoryWithId, useDeleteCategoryWithIds } from 'src/queries/CategoryQueries';
+import EditLocations from './editLocations';
 
-import EditCategories from './editCategories';
-
-// import { ConfirmDialog } from 'src/components/custom-dialog';
-
-const CategoryDetailsTableRow = ({
+const LocationDetailsTableRow = ({
   row,
   selected,
   onSelectRow,
@@ -33,12 +29,11 @@ const CategoryDetailsTableRow = ({
   confirm,
 }) => {
   const theme = useTheme();
-  const deleteCategoryWithId = useDeleteCategoryWithId();
-  const [editCategory, setEditCategory] = useState(false);
+
+  const [editLocation, setEditLocation] = useState(false);
   const popover = usePopover();
   const rowConfirm = useBoolean();
-  const deleteCategoryWithIds = useDeleteCategoryWithIds();
-  // console.log('assets status', row.status);
+
   return (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
@@ -58,7 +53,19 @@ const CategoryDetailsTableRow = ({
 
       <TableCell>
         <ListItemText
-          primary={row?.category_name}
+          primary={row?.location_name}
+          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
+          secondaryTypographyProps={{
+            mt: 0.5,
+            component: 'span',
+            typography: 'caption',
+          }}
+        />
+      </TableCell>
+
+      <TableCell>
+        <ListItemText
+          primary={row?.company_name}
           primaryTypographyProps={{ typography: 'body2', noWrap: true }}
           secondaryTypographyProps={{
             mt: 0.5,
@@ -69,8 +76,8 @@ const CategoryDetailsTableRow = ({
       </TableCell>
       <TableCell>
         <ListItemText
-          primary={row?.category_desc}
-          primaryTypographyProps={{ typography: 'body2', noWrap: false }}
+          primary={row?.department_name}
+          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
           secondaryTypographyProps={{
             mt: 0.5,
             component: 'span',
@@ -100,19 +107,9 @@ const CategoryDetailsTableRow = ({
         arrow="right-top"
         sx={{ width: 160 }}
       >
-        {/* <MenuItem
-          onClick={() => {
-            // onViewRow();
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="solar:eye-bold" />
-          View
-        </MenuItem> */}
-
         <MenuItem
           onClick={() => {
-            setEditCategory(true);
+            setEditLocation(true);
             popover.onClose();
           }}
         >
@@ -135,10 +132,10 @@ const CategoryDetailsTableRow = ({
         </MenuItem>
       </CustomPopover>
       <CustomDialog
-        openFlag={editCategory}
-        setonClose={() => setEditCategory(false)}
-        placeHolder="Edit Category"
-        component={<EditCategories row={row} />}
+        openFlag={editLocation}
+        setonClose={() => setEditLocation(false)}
+        placeHolder="Edit Location"
+        component={<EditLocations row={row} />}
       />
       <ConfirmDialog
         open={confirm.value}
@@ -153,21 +150,10 @@ const CategoryDetailsTableRow = ({
           <Button
             variant="contained"
             color="error"
-            onClick={async () => {
-              try {
-                const obj = {
-                  ids: table.selected,
-                };
-                console.log('obj', obj);
-                await deleteCategoryWithIds.mutateAsync(obj);
-                confirm.onFalse();
-                table.setSelected([]);
-              } catch (error) {
-                alert('Check your internet connectivity');
-                console.log('error in handleSubmit of delete Categories');
-                console.log('error: ', error);
-                confirm.onFalse();
-              }
+            onClick={() => {
+              alert('Deleted');
+              // handleDeleteRows();
+              confirm.onFalse();
             }}
           >
             Delete
@@ -183,15 +169,8 @@ const CategoryDetailsTableRow = ({
           <Button
             variant="contained"
             color="error"
-            onClick={async () => {
-              try {
-                await deleteCategoryWithId.mutateAsync(row.id);
-                rowConfirm.onFalse();
-              } catch (error) {
-                alert('Check your internet connectivity');
-                console.log('error in handleSubmit of Add Categories');
-                console.log('error: ', error);
-              }
+            onClick={() => {
+              rowConfirm.onFalse();
             }}
           >
             Delete
@@ -202,7 +181,7 @@ const CategoryDetailsTableRow = ({
   );
 };
 
-CategoryDetailsTableRow.propTypes = {
+LocationDetailsTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
@@ -213,4 +192,4 @@ CategoryDetailsTableRow.propTypes = {
   confirm: PropTypes.object,
 };
 
-export default CategoryDetailsTableRow;
+export default LocationDetailsTableRow;

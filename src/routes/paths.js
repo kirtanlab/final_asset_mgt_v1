@@ -23,11 +23,7 @@ export const paths = {
     Category: `${ROOTS.DASHBOARD}/Category`,
     Types: `${ROOTS.DASHBOARD}/Types`,
     Classifications: `${ROOTS.DASHBOARD}/Classifications`,
-    three: `${ROOTS.DASHBOARD}/three`,
-    group: {
-      root: `${ROOTS.DASHBOARD}/group`,
-      five: `${ROOTS.DASHBOARD}/group/five`,
-      six: `${ROOTS.DASHBOARD}/group/six`,
-    },
+    Employees: `${ROOTS.DASHBOARD}/Employees`,
+    Locations: `${ROOTS.DASHBOARD}/Locations`,
   },
 };

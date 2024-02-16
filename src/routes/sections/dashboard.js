@@ -13,10 +13,9 @@ const IndexPage = lazy(() => import('src/pages/dashboard/one'));
 const Category = lazy(() => import('src/pages/dashboard/Category/Category_List'));
 const Classifications = lazy(() => import('src/pages/dashboard/Classifications'));
 const Type = lazy(() => import('src/pages/dashboard/Types/Types_List'));
-const PageThree = lazy(() => import('src/pages/dashboard/three'));
-const PageFour = lazy(() => import('src/pages/dashboard/four'));
-const PageFive = lazy(() => import('src/pages/dashboard/five'));
-const PageSix = lazy(() => import('src/pages/dashboard/six'));
+const Locations = lazy(() => import('src/pages/dashboard/Locations'));
+const Employee = lazy(() => import('src/pages/dashboard/Employees'));
+// const Locations = lazy(() => import('src/pages/dashboard/
 
 // ----------------------------------------------------------------------
 
@@ -37,15 +36,8 @@ export const dashboardRoutes = [
       { path: 'Category', element: <Category /> },
       { path: 'Types', element: <Type /> },
       { path: 'Classifications', element: <Classifications /> },
-      { path: 'three', element: <PageThree /> },
-      {
-        path: 'group',
-        children: [
-          { element: <PageFour />, index: true },
-          { path: 'five', element: <PageFive /> },
-          { path: 'six', element: <PageSix /> },
-        ],
-      },
+      { path: 'Locations', element: <Locations /> },
+      { path: 'Employees', element: <Employee /> },
     ],
   },
 ];

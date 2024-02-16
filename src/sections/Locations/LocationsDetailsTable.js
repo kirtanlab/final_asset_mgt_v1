@@ -17,41 +17,35 @@ import {
 } from '@mui/material';
 
 import Iconify from 'src/components/iconify';
-import { Searchbar } from 'src/layouts/_common';
 import Scrollbar from 'src/components/scrollbar';
-import { Tab } from '@mui/base';
 import TableHeadCustom from 'src/components/table/table-head-custom';
 import {
   TableEmptyRows,
   TableNoData,
   TablePaginationCustom,
   TableSelectedAction,
-  emptyRows,
   getComparator,
-  useTable,
 } from 'src/components/table';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { useCategoryContext } from 'src/context/CategoryContext';
 import CustomDialog from 'src/components/Dialog/dialog';
-import CategoryDetailsTableRow from './CategoryDetailsTableRow';
-import AddCategories from './addCategories';
+import LocationDetailsTableRow from './LocationsDetailsTableRow';
+import AddLocations from './addLocations';
 
-export default function CategoryDetailsTable({
+export default function LocationDetailsTable({
   title,
-  tableLabels,
   table,
-  Categories_Data: tableData,
+  tableLabels,
+  locations_data: tableData,
   subheader,
 }) {
   const defaultFilters = {
-    category_name: '',
+    location_name: '',
   };
 
   const [filters, setFilters] = useState(defaultFilters);
-
   const confirm = useBoolean();
-  const { setAddedFlag } = useCategoryContext();
-  const [addCategory, setAddCategory] = useState(false);
+
+  const [addLocation, setAddLocation] = useState(false);
   const dataFiltered = tableData
     ? applyFilter({
         inputData: tableData,
@@ -82,16 +76,17 @@ export default function CategoryDetailsTable({
     },
     [onFilters]
   );
+  // console.log('empty row for location', emptyRows(table.page, table.rowsPerPage, tableData.length));
   return (
     <Card>
       <Grid container alignItems="center" flexDirection="row">
         <CardHeader title={title} subheader={subheader} sx={{ flex: 1 }} />
-        <Stack sx={{ paddingTop: 3, flexDirection: 'row', flex: 2 }}>
-          <Stack sx={{ width: '70%', paddingRight: 2 }}>
+        <Stack sx={{ paddingTop: 3, flexDirection: 'row', flex: 2, marginRight: 6 }}>
+          <Stack sx={{ width: '100%', paddingRight: 2 }}>
             <TextField
               value={filters.name}
               onChange={handleFilterName}
-              placeholder="Search id / categories name / description ..."
+              placeholder="Search id / location name / department name / company name..."
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -99,20 +94,20 @@ export default function CategoryDetailsTable({
                   </InputAdornment>
                 ),
               }}
-              sx={{}}
+              sx={{ width: '100%' }}
             />
           </Stack>
 
           <Button
-            sx={{ pt: 2 }}
+            sx={{ pt: 2, width: 200 }}
             size="medium"
             color="inherit"
             onClick={() => {
-              setAddCategory(true);
+              setAddLocation(true);
             }}
             endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
           >
-            Add Categories
+            Add Locations
           </Button>
         </Stack>
       </Grid>
@@ -121,7 +116,7 @@ export default function CategoryDetailsTable({
           <TableSelectedAction
             dense={table.dense}
             numSelected={table.selected.length}
-            rowCount={tableData?.length}
+            rowCount={tableData.length}
             onSelectAllRows={(checked) =>
               table.onSelectAllRows(
                 checked,
@@ -162,7 +157,7 @@ export default function CategoryDetailsTable({
                     table.page * table.rowsPerPage + table.rowsPerPage
                   )
                   .map((row) => (
-                    <CategoryDetailsTableRow
+                    <LocationDetailsTableRow
                       key={row.id}
                       row={row}
                       table={table}
@@ -181,10 +176,10 @@ export default function CategoryDetailsTable({
 
         <Divider sx={{ borderStyle: 'dotted' }} />
         <CustomDialog
-          openFlag={addCategory}
-          setonClose={() => setAddCategory(false)}
-          placeHolder="Add New Category"
-          component={<AddCategories />}
+          openFlag={addLocation}
+          setonClose={() => setAddLocation(false)}
+          placeHolder="Add New Location"
+          component={<AddLocations />}
         />
         <TablePaginationCustom
           count={dataFiltered.length}
@@ -200,12 +195,12 @@ export default function CategoryDetailsTable({
   );
 }
 
-CategoryDetailsTable.propTypes = {
+LocationDetailsTable.propTypes = {
   title: PropTypes.string,
   tableLabels: PropTypes.array,
   subheader: PropTypes.string,
+  locations_data: PropTypes.array,
   table: PropTypes.any,
-  Categories_Data: PropTypes.array,
 };
 function applyFilter({ inputData, comparator, filters }) {
   const { name } = filters;
@@ -221,10 +216,11 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (name) {
     inputData = inputData.filter(
-      (category) =>
-        category.category_name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        category.category_desc.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        category.id.toString().toLowerCase().indexOf(name.toLowerCase()) !== -1
+      (location) =>
+        location.location_name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        location.department_name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        location.company_name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        location.id.toString().toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
 

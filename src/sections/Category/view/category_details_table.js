@@ -1,33 +1,63 @@
-import { useState } from 'react';
-
-// @mui
-import { alpha } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { Grid } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-// components
-import { mock_tableData } from 'src/_mock/_tableData';
+import { Alert, AlertTitle, Grid } from '@mui/material';
 import { useSettingsContext } from 'src/components/settings';
 import { useGetAllCategories } from 'src/queries/CategoryQueries';
+import { TableSkeleton, useTable } from 'src/components/table';
 import CategoryDetailsTable from '../CategoryDetailsTable';
 
 // ----------------------------------------------------------------------
 
 export default function AssetCategoryList() {
   const settings = useSettingsContext();
+  const table = useTable({ defaultOrderBy: 'id' });
   const {
     data: getAllCategoryData,
     error: getAllCategoryError,
     isLoading: getAllCategoryLoading,
   } = useGetAllCategories();
+  console.log(
+    'data,error,isLoading',
+    getAllCategoryData,
+    getAllCategoryError,
+    getAllCategoryLoading
+  );
+  const [showAlert, setShowAlert] = useState(getAllCategoryError);
 
+  const denseHeight = table.dense ? 56 : 76;
   if (getAllCategoryLoading) {
-    return <h1>Loading...</h1>;
+    return (
+      <>
+        <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+          <Typography variant="h4"> Assets Category Master </Typography>
+          <Grid xs={12} marginTop={2}>
+            {[...Array(table.rowsPerPage)].map((i, index) => (
+              <TableSkeleton key={index} sx={{ height: denseHeight }} />
+            ))}
+          </Grid>
+        </Container>
+      </>
+    );
   }
   if (getAllCategoryError || getAllCategoryData === undefined) {
-    return <h1>Error</h1>;
+    console.log('in error!');
+    return (
+      <>
+        <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+          <Typography variant="h4"> Assets Category Master </Typography>
+          <Alert severity="error" sx={{ mt: 2 }} onClose={() => console.log('closed alert')}>
+            <AlertTitle>Error</AlertTitle>
+            Oops! Check your internet connectivity
+          </Alert>
+          <Grid xs={12} marginTop={2}>
+            {[...Array(table.rowsPerPage)].map((i, index) => (
+              <TableSkeleton key={index} sx={{ height: denseHeight }} />
+            ))}
+          </Grid>
+        </Container>
+      </>
+    );
   }
 
   return (
@@ -35,6 +65,7 @@ export default function AssetCategoryList() {
       <Typography variant="h4"> Assets Category Master </Typography>
       <Grid xs={12} marginTop={2}>
         <CategoryDetailsTable
+          table={table}
           title="Assets Categories Details"
           Categories_Data={getAllCategoryData.data}
           tableLabels={[
