@@ -6,3 +6,11 @@
 --> autoSort the data after completion editing
 --> add proper messages in toast for submit, edit, delete, deleteSelected
 --> Logo.js for Changing Logo /home/kirtan/Documents/elecon/asset_mgt_frontend/src/components/logo/logo.js
+
+
+--> Cascade or Delete method for Relationships in backend
+--> if any location or employee is deactivated or deleted then it would create same impact for related classifications and types
+
+
+1) change active status of classifications if location is deactivated
+--> Change
