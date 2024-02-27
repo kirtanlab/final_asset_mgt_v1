@@ -21,6 +21,7 @@ import { SettingsProvider, SettingsDrawer } from 'src/components/settings';
 import { AuthProvider, AuthConsumer } from 'src/auth/context/jwt';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { CategoryProvider } from './context/CategoryContext';
+import { SnackbarProvider } from './components/snackbar';
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -62,11 +63,13 @@ export default function App() {
           >
             <ThemeProvider>
               <MotionLazy>
+                <SnackbarProvider>
                 <SettingsDrawer />
                 <ProgressBar />
                 <AuthConsumer>
                   <Router />
                 </AuthConsumer>
+                </SnackbarProvider>
               </MotionLazy>
             </ThemeProvider>
           </SettingsProvider>

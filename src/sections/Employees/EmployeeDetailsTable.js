@@ -39,13 +39,14 @@ export default function EmployeeDetailsTable({
   title,
   table,
   tableLabels,
+  actions_data,
   employees_data: tableData,
   subheader,
 }) {
   const defaultFilters = {
     employees_name: '',
   };
-
+ 
   const [filters, setFilters] = useState(defaultFilters);
   const confirm = useBoolean();
 
@@ -164,6 +165,7 @@ export default function EmployeeDetailsTable({
                     <EmployeeDetailsTableRow
                       key={row.id}
                       row={row}
+                      actions_data={ actions_data}
                       table={table}
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
@@ -205,6 +207,7 @@ EmployeeDetailsTable.propTypes = {
   subheader: PropTypes.string,
   employees_data: PropTypes.array,
   table: PropTypes.any,
+  actions_data: PropTypes.array
 };
 function applyFilter({ inputData, comparator, filters }) {
   const { name } = filters;

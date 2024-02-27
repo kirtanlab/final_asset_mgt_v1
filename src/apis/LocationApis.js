@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { getAuthHeader } from 'src/auth/context/jwt/utils';
 
 const BACKEND_CALL_URL = 'http://localhost:8080/api/v1';
 
 export async function getAllLocations() {
-  return axios.get(`${BACKEND_CALL_URL}/location/`).then((res) => res.data);
+  return axios.get(`${BACKEND_CALL_URL}/location/`,getAuthHeader()).then((res) => res.data);
 }
 export async function createNewLocation(locationData) {
   return axios

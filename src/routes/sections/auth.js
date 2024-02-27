@@ -6,6 +6,8 @@ import { GuestGuard } from 'src/auth/guard';
 import AuthClassicLayout from 'src/layouts/auth/classic';
 // components
 import { SplashScreen } from 'src/components/loading-screen';
+import AuthModernCompactLayout from 'src/layouts/auth/modern-compact';
+import ModernLoginView from 'src/sections/auth/modern/login';
 
 // ----------------------------------------------------------------------
 
@@ -28,9 +30,9 @@ const authJwt = {
     {
       path: 'login',
       element: (
-        <AuthClassicLayout>
+        <AuthModernCompactLayout>
           <JwtLoginPage />
-        </AuthClassicLayout>
+        </AuthModernCompactLayout>
       ),
     },
     {

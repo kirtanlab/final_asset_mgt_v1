@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import { useEffect, useReducer, useCallback, useMemo } from 'react';
+import { useEffect, useReducer, useCallback, useMemo, useContext } from 'react';
 // utils
 import axios, { endpoints } from 'src/utils/axios';
-//
+
 import { AuthContext } from './auth-context';
 import { isValidToken, setSession } from './utils';
 
@@ -51,7 +51,7 @@ const reducer = (state, action) => {
 
 const STORAGE_KEY = 'accessToken';
 
-export function AuthProvider({ children }) {
+function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const initialize = useCallback(async () => {
@@ -159,7 +159,7 @@ export function AuthProvider({ children }) {
       loading: status === 'loading',
       authenticated: status === 'authenticated',
       unauthenticated: status === 'unauthenticated',
-      //
+      dispatch,
       login,
       register,
       logout,
@@ -169,7 +169,14 @@ export function AuthProvider({ children }) {
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;
 }
-
+const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+export { AuthProvider, useAuth, AuthContext };
 AuthProvider.propTypes = {
   children: PropTypes.node,
 };

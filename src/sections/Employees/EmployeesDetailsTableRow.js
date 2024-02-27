@@ -23,6 +23,7 @@ const EmployeeDetailsTableRow = ({
   selected,
   onSelectRow,
   onViewRow,
+  actions_data,
   onEditRow,
   onDeleteRow,
   table,
@@ -65,7 +66,7 @@ const EmployeeDetailsTableRow = ({
 
       <TableCell>
         <ListItemText
-          primary={row?.employee_code}
+          primary={row?.employeeCode}
           primaryTypographyProps={{ typography: 'body2', noWrap: true }}
           secondaryTypographyProps={{
             mt: 0.5,
@@ -140,6 +141,43 @@ const EmployeeDetailsTableRow = ({
           <Iconify icon="solar:trash-bin-trash-bold" />
           Delete
         </MenuItem>
+        {actions_data && 
+        actions_data.map((_row) => {
+          console.log('actions_data',actions_data)
+          console.log('actions_data hehe ',_row);
+          return (
+      //   <ConfirmDialog
+      //   open={rowConfirm.value}
+      //   onClose={rowConfirm.onFalse}
+      //         title={_row?.actionName}
+      //   content={<>Are you sure want to delete this item?</>}
+      //   action={
+      //     <Button
+      //       variant="contained"
+      //       color="error"
+      //       onClick={() => {
+      //         rowConfirm.onFalse();
+      //       }}
+      //     >
+      //       Delete
+      //     </Button>
+      //   }
+            // />
+            <>
+        <MenuItem
+          onClick={() => {
+            setEditEmployee(true);
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="solar:pen-bold" />
+                { _row?.actionName}
+        </MenuItem>
+
+              <Divider sx={{ borderStyle: 'dashed' }} />
+              </>
+      )})
+      }
       </CustomPopover>
       <CustomDialog
         openFlag={editEmployee}
@@ -170,6 +208,7 @@ const EmployeeDetailsTableRow = ({
           </Button>
         }
       />
+
       <ConfirmDialog
         open={rowConfirm.value}
         onClose={rowConfirm.onFalse}
@@ -187,6 +226,7 @@ const EmployeeDetailsTableRow = ({
           </Button>
         }
       />
+      
     </TableRow>
   );
 };
@@ -200,6 +240,7 @@ EmployeeDetailsTableRow.propTypes = {
   selected: PropTypes.bool,
   table: PropTypes.any,
   confirm: PropTypes.object,
+  actions_data: PropTypes.array
 };
 
 export default EmployeeDetailsTableRow;

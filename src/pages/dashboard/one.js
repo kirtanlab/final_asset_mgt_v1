@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 // sections
-import OneView from 'src/sections/one/view';
+import OneView from 'src/sections/one/view/view';
 
 // ----------------------------------------------------------------------
 

@@ -1,0 +1,38 @@
+{
+  "role": {
+    "employee": {
+      "currentStatus": {
+        "pending": [
+          {
+            "actionName": "pullback",
+            "api_endpoint": "employee/updateStatus/pullback"
+          }
+        ],
+        "pullback": [],
+        "cancelled": [],
+        "approved": [
+          {
+            "actionName": "cancelled",
+            "api_endpoint": "employee/updateStatus/cancelled"
+          }
+        ],
+        "allocated": [],
+        "rejected": []
+      }
+    },
+    "manager": {
+      "currentStatus": {
+        "pending": [
+          {
+            "actionName": "approve",
+            "api_endpoint": "employee/updateStatus/approve"
+          },
+          {
+            "actionName": "reject",
+            "api_endpoint": "employee/updateStatus/reject"
+          }
+        ]
+      }
+    }
+  }
+}

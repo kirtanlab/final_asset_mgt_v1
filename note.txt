@@ -11,6 +11,19 @@
 --> Cascade or Delete method for Relationships in backend
 --> if any location or employee is deactivated or deleted then it would create same impact for related classifications and types
 
-
 1) change active status of classifications if location is deactivated
 --> Change
+
+
+
+--> add reporting to in employee table
+
+
+queries:
+--> if any location or employee is deactivated or deleted then it would create same impact for related classifications and types
+--> what is reporting to, like if the person will get changed then what?
+--> can manager undo rejected requests?
+--> location in asset request and location in assets classification would necessarily be same? or does it convey something else?
+--> currently not considering case of employee leaving the company and few data would be corrupted
+i.e) employee A is reporting to B and B left the company then this data would be corrupted
+-->
