@@ -15,6 +15,7 @@ const Classifications = lazy(() => import('src/pages/dashboard/Classifications')
 const Type = lazy(() => import('src/pages/dashboard/Types/Types_List'));
 const Locations = lazy(() => import('src/pages/dashboard/Locations'));
 const Employee = lazy(() => import('src/pages/dashboard/Employees'));
+const AsssetRequest = lazy(() => import('src/pages/dashboard/Requests'));
 // const Locations = lazy(() => import('src/pages/dashboard/
 
 // ----------------------------------------------------------------------
@@ -38,6 +39,8 @@ export const dashboardRoutes = [
       { path: 'Classifications', element: <Classifications /> },
       { path: 'Locations', element: <Locations /> },
       { path: 'Employees', element: <Employee /> },
+      { path: 'Employees', element: <Employee /> },
+      { path: 'AssetRequest', element: <AsssetRequest /> },
     ],
   },
 ];

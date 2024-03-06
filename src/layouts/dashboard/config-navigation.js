@@ -69,6 +69,11 @@ export function useNavData() {
             path: paths.dashboard.Employees,
             icon: ICONS.chat,
           },
+          {
+            title: 'Asset Requests',
+            path: paths.dashboard.Asset_Request,
+            icon: ICONS.chat,
+          },
         ],
       },
     ],

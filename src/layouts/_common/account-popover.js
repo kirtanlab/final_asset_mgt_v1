@@ -102,7 +102,7 @@ export default function AccountPopover() {
             <b>Department:</b> {user?.employee_dept}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            <b>Role:</b> {user?.role?.role_name}
+            <b>Role:</b> {user?.role}
           </Typography>
         </Box>
 

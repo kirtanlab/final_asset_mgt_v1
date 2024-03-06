@@ -27,3 +27,5 @@ queries:
 --> currently not considering case of employee leaving the company and few data would be corrupted
 i.e) employee A is reporting to B and B left the company then this data would be corrupted
 -->
+
+

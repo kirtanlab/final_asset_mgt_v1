@@ -9,11 +9,17 @@ import Scrollbar from '../scrollbar';
 
 function CustomDialog({ openFlag, setonClose, placeHolder, component }) {
   const theme = useTheme();
+
+  const handleClose = () => {
+    // Your close logic here
+    setonClose();
+  };
+
   return (
     <Dialog
       fullWidth
       open={openFlag}
-      onClose={setonClose}
+      onClose={handleClose}
       transitionDuration={{
         enter: theme.transitions.duration.shortest,
         exit: 0,
@@ -36,7 +42,10 @@ function CustomDialog({ openFlag, setonClose, placeHolder, component }) {
           <Typography sx={{ letterSpacing: 1, color: 'text.primary', fontWeight: 'bold' }}>
             {placeHolder}
           </Typography>
-          <Label sx={{ letterSpacing: 1, color: 'text.secondary' }}>esc</Label>
+          {/* Close icon */}
+          <Label onClick={handleClose} sx={{ cursor: 'pointer', fontSize: 20 }}>
+            &#10005;
+          </Label>
         </Stack>
       </Box>
       <Stack sx={{ p: 3, pt: 2, height: 380, width: '100%' }}>{component}</Stack>

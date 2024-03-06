@@ -5,7 +5,7 @@ import { Alert, AlertTitle, Grid } from '@mui/material';
 import { useSettingsContext } from 'src/components/settings';
 import { useGetAllCategories } from 'src/queries/CategoryQueries';
 import { TableSkeleton, useTable } from 'src/components/table';
-import CategoryDetailsTable from '../CategoryDetailsTable';
+import CategoryDetailsTable from '../CategoryDetailsTable.1';
 
 // ----------------------------------------------------------------------
 

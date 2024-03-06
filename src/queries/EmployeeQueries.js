@@ -21,6 +21,7 @@ export const useLoginEmployee = () => {
   const { mutateAsync, isLoading, isIdle, error, isError } = useMutation(EmployeeLogin, {
     disableMultipleMutations: true,
     onSuccess: (ResData) => {
+      console.log('token', ResData);
       const { token, employeeDetails: user } = ResData;
       setSession(token);
       dispatch({

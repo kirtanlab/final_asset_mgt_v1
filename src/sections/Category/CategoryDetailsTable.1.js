@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -11,35 +11,28 @@ import {
   Stack,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
-  TableRow,
   TextField,
   Tooltip,
 } from '@mui/material';
-
 import Iconify from 'src/components/iconify';
-import { Searchbar } from 'src/layouts/_common';
 import Scrollbar from 'src/components/scrollbar';
-import { Tab } from '@mui/base';
 import TableHeadCustom from 'src/components/table/table-head-custom';
 import {
   TableEmptyRows,
   TableNoData,
   TablePaginationCustom,
   TableSelectedAction,
-  emptyRows,
   getComparator,
-  useTable,
 } from 'src/components/table';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useCategoryContext } from 'src/context/CategoryContext';
 import { useSnackbar } from 'src/components/snackbar';
 import { useDeleteCategoryWithId } from 'src/queries/CategoryQueries';
 import CustomDialog from 'src/components/Dialog/dialog';
-import { LoadingScreen } from 'src/components/loading-screen';
 import CategoryDetailsTableRow from './CategoryDetailsTableRow';
 import AddCategories from './addCategories';
+import { applyFilter } from './CategoryDetailsTable';
 
 export default function CategoryDetailsTable({
   title,
@@ -194,38 +187,27 @@ export default function CategoryDetailsTable({
               />
 
               <TableBody>
-                {/* {DeleteLoading && (
-                  <TableRow
-                    sx={{
-                      ...(denseHeight && {
-                        denseHeight: denseHeight * (5 - tableData.length),
-                      }),
-                    }}
-                  >
-                    <TableCell colSpan={9}>
-                      <LoadingScreen />
-                    </TableCell>
-                  </TableRow>
-                )} */}
-                {dataFiltered
-                  .slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
-                  )
-                  .map((row) => (
-                    <CategoryDetailsTableRow
-                      key={row.id}
-                      row={row}
-                      table={table}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
-                      onDeleteRow={DeleteMutation}
-                      confirm={confirm}
-                    />
-                  ))}
-                {/* {!notFound && ( */}
-                <TableEmptyRows height={denseHeight} emptyRows={5 - tableData.length} />
-                {/* )} */}
+                {DeleteLoading && <div />}
+                {!DeleteLoading &&
+                  dataFiltered
+                    .slice(
+                      table.page * table.rowsPerPage,
+                      table.page * table.rowsPerPage + table.rowsPerPage
+                    )
+                    .map((row) => (
+                      <CategoryDetailsTableRow
+                        key={row.id}
+                        row={row}
+                        table={table}
+                        selected={table.selected.includes(row.id)}
+                        onSelectRow={() => table.onSelectRow(row.id)}
+                        onDeleteRow={DeleteMutation}
+                        confirm={confirm}
+                      />
+                    ))}
+                {!notFound && !DeleteLoading && (
+                  <TableEmptyRows height={denseHeight} emptyRows={5 - tableData.length} />
+                )}
 
                 <TableNoData notFound={notFound} />
               </TableBody>
@@ -253,7 +235,6 @@ export default function CategoryDetailsTable({
     </Card>
   );
 }
-
 CategoryDetailsTable.propTypes = {
   title: PropTypes.string,
   tableLabels: PropTypes.array,
@@ -261,26 +242,3 @@ CategoryDetailsTable.propTypes = {
   table: PropTypes.any,
   Categories_Data: PropTypes.array,
 };
-export function applyFilter({ inputData, comparator, filters }) {
-  const { name } = filters;
-  const stabilizedThis = inputData.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-
-  inputData = stabilizedThis.map((el) => el[0]);
-
-  if (name) {
-    inputData = inputData.filter(
-      (category) =>
-        category.category_name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        category.category_desc.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        category.id.toString().toLowerCase().indexOf(name.toLowerCase()) !== -1
-    );
-  }
-
-  return inputData;
-}

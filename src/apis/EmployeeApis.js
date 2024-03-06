@@ -2,8 +2,16 @@ import axios from 'axios';
 import { getAuthHeader } from 'src/auth/context/jwt/utils';
 
 const BACKEND_CALL_URL = 'http://localhost:8080/api/v1';
-export async function getAllEmployee() {  
-  return axios.get(`${BACKEND_CALL_URL}/employee/`, getAuthHeader()).then((res) => {console.log('employees data',res); return res.data});
+
+export async function testEmployee() {
+  return axios.get(`${BACKEND_CALL_URL}/employee/test/`, getAuthHeader()).then((res) => res.data);
+}
+
+export async function getAllEmployee() {
+  return axios.get(`${BACKEND_CALL_URL}/employee/`, getAuthHeader()).then((res) => {
+    console.log('employees data', res);
+    return res.data;
+  });
 }
 export async function createNewEmployee(employeeData) {
   return axios

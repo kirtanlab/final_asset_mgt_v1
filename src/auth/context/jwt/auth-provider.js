@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useReducer, useCallback, useMemo, useContext } from 'react';
 // utils
 import axios, { endpoints } from 'src/utils/axios';
-
+import { testEmployee } from 'src/apis/EmployeeApis';
 import { AuthContext } from './auth-context';
 import { isValidToken, setSession } from './utils';
 
@@ -61,9 +61,7 @@ function AuthProvider({ children }) {
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
 
-        const response = await axios.get(endpoints.auth.me);
-
-        const { user } = response.data;
+        const user = await testEmployee();
 
         dispatch({
           type: 'INITIAL',

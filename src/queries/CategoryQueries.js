@@ -11,7 +11,7 @@ export const useGetAllCategories = () =>
   useQuery(['AllCategory'], getAllCategories, {
     retry: 1,
     refetchOnReconnect: 'always',
-    refetchInterval: 1000 * 60 * 0.2,
+    refetchInterval: 1000 * 60 * 5,
   });
 
 export const useCreateCategory = () => {
@@ -43,7 +43,7 @@ export const useDeleteCategoryWithId = () => {
 
   const mutation = useMutation(deleteCategoryWithId, {
     onSuccess: () => {
-      queryClient.refetchQueries(['AllCategory']);
+      queryClient.invalidateQueries(['AllCategory']);
     },
   });
   return mutation;

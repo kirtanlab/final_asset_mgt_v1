@@ -1,0 +1,50 @@
+[
+  {
+    "allocated_asset_id": 2,
+    "required_by": "2024-02-30",
+    "details": "ar1",
+    "reason": "32111dcdfgdfgfdg",
+    "status": 2,
+    "classification_id": 254,
+    "location_id": 52,
+    "category_id": 3,
+    "asset_type_id": 1,
+    "reporting_to_id": 102
+  },
+  {
+    "allocated_asset_id": 2,
+    "required_by": "2024-02-30",
+    "details": "ar1",
+    "reason": "sdfsdfsdsdfdsfsfsdfsfs",
+    "status": 1,
+    "classification_id": 254,
+    "location_id": 52,
+    "category_id": 3,
+    "asset_type_id": 1,
+    "reporting_to_id": 102
+  },
+  {
+    "allocated_asset_id": 2,
+    "required_by": "2024-02-30",
+    "details": "ar1",
+    "reason": "32111dcdfgdfgfdg",
+    "status": 3,
+    "classification_id": 254,
+    "location_id": 52,
+    "category_id": 3,
+    "asset_type_id": 1,
+    "reporting_to_id": 102
+  },
+  {
+    "allocated_asset_id": 2,
+    "required_by": "2024-02-30",
+    "details": "ar1",
+    "reason": "32111dcdfgdfgfdg",
+    "status": 4,
+    "classification_id": 254,
+    "location_id": 52,
+    "category_id": 3,
+    "asset_type_id": 1,
+    "reporting_to_id": 102
+  }
+]

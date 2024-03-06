@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -15,9 +15,10 @@ import Iconify from 'src/components/iconify';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { LoadingScreen } from 'src/components/loading-screen';
 import CustomDialog from 'src/components/Dialog/dialog';
 import { useDeleteCategoryWithId, useDeleteCategoryWithIds } from 'src/queries/CategoryQueries';
-
+import { useSnackbar } from 'src/components/snackbar';
 import EditCategories from './editCategories';
 
 // import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -32,13 +33,11 @@ const CategoryDetailsTableRow = ({
   table,
   confirm,
 }) => {
-  const theme = useTheme();
-  const deleteCategoryWithId = useDeleteCategoryWithId();
   const [editCategory, setEditCategory] = useState(false);
   const popover = usePopover();
   const rowConfirm = useBoolean();
   const deleteCategoryWithIds = useDeleteCategoryWithIds();
-  // console.log('assets status', row.status);
+
   return (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
@@ -185,8 +184,8 @@ const CategoryDetailsTableRow = ({
             color="error"
             onClick={async () => {
               try {
-                await deleteCategoryWithId.mutateAsync(row.id);
                 rowConfirm.onFalse();
+                await onDeleteRow(row.id);
               } catch (error) {
                 alert('Check your internet connectivity');
                 console.log('error in handleSubmit of Add Categories');
