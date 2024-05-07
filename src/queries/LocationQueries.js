@@ -12,6 +12,7 @@ export const useGetAllLocations = () =>
     retry: 1,
     refetchOnReconnect: 'always',
     refetchInterval: 1000 * 60 * 0.2,
+    refetchOnWindowFocus: false,
   });
 
 export const useCreateLocation = () => {
@@ -42,8 +43,11 @@ export const useDeleteLocationWithId = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation(deleteLocationWithId, {
-    onSuccess: () => {
-      queryClient.refetchQueries(['AllLocations']);
+    onSuccess: async () => {
+      await Promise.all([queryClient.refetchQueries(['AllLocations'])]);
+    },
+    onError: (e) => {
+      console.log(e);
     },
   });
   return mutation;
@@ -52,8 +56,11 @@ export const useDeleteLocationWithId = () => {
 export const useDeleteLocationWithIds = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation(deleteLocationsWithIds, {
-    onSuccess: () => {
-      queryClient.refetchQueries(['AllLocations']);
+    onSuccess: async () => {
+      await Promise.all([queryClient.refetchQueries(['AllLocations'])]);
+    },
+    onError: (e) => {
+      console.log(e);
     },
   });
   return mutation;

@@ -40,6 +40,7 @@ import CustomDialog from 'src/components/Dialog/dialog';
 import { LoadingScreen } from 'src/components/loading-screen';
 import CategoryDetailsTableRow from './CategoryDetailsTableRow';
 import AddCategories from './addCategories';
+import CategoryTableToolbar from './category-table-toolbar';
 
 export default function CategoryDetailsTable({
   title,
@@ -49,7 +50,8 @@ export default function CategoryDetailsTable({
   subheader,
 }) {
   const defaultFilters = {
-    category_name: '',
+    name: '',
+    active: 'All',
   };
 
   const [filters, setFilters] = useState(defaultFilters);
@@ -68,7 +70,7 @@ export default function CategoryDetailsTable({
   const canReset =
     !!filters.name ||
     !!filters.service?.length ||
-    filters.status !== 'all' ||
+    filters?.active !== 'all' ||
     (!!filters.startDate && !!filters.endDate);
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
   const onFilters = useCallback(
@@ -122,38 +124,12 @@ export default function CategoryDetailsTable({
   // }
   return (
     <Card>
-      <Grid container alignItems="center" flexDirection="row">
-        <CardHeader title={title} subheader={subheader} sx={{ flex: 1 }} />
-        <Stack sx={{ paddingTop: 3, flexDirection: 'row', flex: 2 }}>
-          <Stack sx={{ width: '70%', paddingRight: 2 }}>
-            <TextField
-              value={filters.name}
-              onChange={handleFilterName}
-              placeholder="Search id / categories name / description ..."
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Iconify icon="eva:search-fill" sx={{}} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{}}
-            />
-          </Stack>
+      <CategoryTableToolbar
+        placeHolder="Search id / categories name / description ..."
+        filters={filters}
+        onFilters={onFilters}
+      />
 
-          <Button
-            sx={{ pt: 2 }}
-            size="medium"
-            color="inherit"
-            onClick={() => {
-              setAddCategory(true);
-            }}
-            endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
-          >
-            Add Categories
-          </Button>
-        </Stack>
-      </Grid>
       <Grid sx={{ mt: 3 }}>
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
           <TableSelectedAction
@@ -220,6 +196,8 @@ export default function CategoryDetailsTable({
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
                       onDeleteRow={DeleteMutation}
+                      DeletedSuccess={DeletedSuccess}
+                      DeleteLoading={DeleteLoading}
                       confirm={confirm}
                     />
                   ))}
@@ -262,7 +240,7 @@ CategoryDetailsTable.propTypes = {
   Categories_Data: PropTypes.array,
 };
 export function applyFilter({ inputData, comparator, filters }) {
-  const { name } = filters;
+  const { name, active } = filters;
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
@@ -272,7 +250,12 @@ export function applyFilter({ inputData, comparator, filters }) {
   });
 
   inputData = stabilizedThis.map((el) => el[0]);
-
+  if (active !== 'All') {
+    inputData = inputData.filter((category) => {
+      const fieldValue = category.status ? 'Active' : 'Inactive';
+      return fieldValue && fieldValue === active;
+    });
+  }
   if (name) {
     inputData = inputData.filter(
       (category) =>

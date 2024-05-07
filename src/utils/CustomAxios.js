@@ -1,11 +1,11 @@
 import axios from 'axios';
+import { HOST_ADDRESS } from 'src/apis/host';
 
-const BACKEND_CALL_URL = 'http://localhost:8080/api/v1';
 export async function CustomAxios(method, endpoint, data, id) {
   const token = '';
   const config = {
     method,
-    url: `${BACKEND_CALL_URL}/${endpoint}`,
+    url: `${HOST_ADDRESS}/${endpoint}`,
     Authorization: `Bearer ${token}`,
   };
 
@@ -22,5 +22,5 @@ export async function EmployeeLogin(employeeData) {
     employeeCode: employeeData.email,
     password: employeeData.password,
   };
-  return axios.post(`${BACKEND_CALL_URL}/employee/login`, obj).then((response) => response.data);
+  return axios.post(`${HOST_ADDRESS}/employee/login`, obj).then((response) => response.data);
 }

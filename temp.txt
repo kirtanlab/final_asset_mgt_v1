@@ -1,104 +1,14 @@
-
-
-
-{/* <Box
-          rowGap={1.5}
-          display="grid"
-          gridTemplateColumns="repeat(2, 1fr)"
-          sx={{ p: 3 }}
-        >
-          {[
-            {
-              label: experience,
-              icon: (
-                <Iconify
-                  width={16}
-                  icon="carbon:skill-level-basic"
-                  sx={{ flexShrink: 0 }}
-                />
-              ),
-            },
-            {
-              label: employmentTypes.join(", "),
-              icon: (
-                <Iconify
-                  width={16}
-                  icon="solar:clock-circle-bold"
-                  sx={{ flexShrink: 0 }}
-                />
-              ),
-            },
-            {
-              label: salary.negotiable ? "Negotiable" : fCurrency(salary.price),
-              icon: (
-                <Iconify
-                  width={16}
-                  icon="solar:wad-of-money-bold"
-                  sx={{ flexShrink: 0 }}
-                />
-              ),
-            },
-            {
-              label: role,
-              icon: (
-                <Iconify
-                  width={16}
-                  icon="solar:user-rounded-bold"
-                  sx={{ flexShrink: 0 }}
-                />
-              ),
-            },
-          ].map((item) => (
-            <Stack
-              key={item.label}
-              spacing={0.5}
-              flexShrink={0}
-              direction="row"
-              alignItems="center"
-              sx={{ color: "text.disabled", minWidth: 0 }}
-            >
-              {item.icon}
-              <Typography variant="caption" noWrap>
-                {item.label}
-              </Typography>
-            </Stack>
-          ))}
-        </Box> */}
-
-<CustomPopover
-        open={popover.open}
-        onClose={popover.onClose}
-        arrow="right-top"
-        sx={{ width: 140 }}
-      >
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-            onView();
-          }}
-        >
-          <Iconify icon="solar:eye-bold" />
-          View
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-            onEdit();
-          }}
-        >
-          <Iconify icon="solar:pen-bold" />
-          Edit
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-            onDelete();
-          }}
-          sx={{ color: "error.main" }}
-        >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
-        </MenuItem>
-      </CustomPopover>
+const seconds = 1000;
+export const useGetAllClassification = () => {
+  const queryClient = useQueryClient();
+  return useQuery(['AllClassification'], getAllClassification, {
+    initialData: () => {
+      return queryClient.getQueryData(['AllClassification']);
+    },
+    cacheTime: 20 * seconds,
+    staleTime: 20 * seconds,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: true,
+  });
+};

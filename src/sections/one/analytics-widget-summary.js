@@ -19,6 +19,7 @@ export default function AnalyticsWidgetSummary({
   total,
   icon,
   path,
+  href,
   color = 'primary',
   sx,
   ...other
@@ -40,12 +41,14 @@ export default function AnalyticsWidgetSummary({
         textAlign: 'center',
         color: `${color}.darker`,
         backgroundColor: 'common.white',
+        overflow: 'hidden',
+        maxHeight: '100%',
         ...sx,
       }}
       {...other}
     >
       <Link
-        href="Types"
+        href={href}
         // target="_blank"
         // rel="noopener"
         component={RouterLink}
@@ -58,11 +61,16 @@ export default function AnalyticsWidgetSummary({
           color: `${color}.darker`,
         }}
       >
-        {icon && <Box sx={{ width: 50, height: 50, mb: 1 }}>{icon}</Box>}
+        {/* {icon && <Box sx={{ width: 50, height: 50, mb: 1 }}>{icon}</Box>} */}
 
-        <Typography variant="h3">{fShortenNumber(total)}</Typography>
+        <Typography variant="h2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {total ? fShortenNumber(total) : 0}
+        </Typography>
 
-        <Typography variant="subtitle2" sx={{ opacity: 0.64 }}>
+        <Typography
+          variant="subtitle2"
+          sx={{ opacity: 0.64, overflow: 'hidden', textOverflow: 'ellipsis' }}
+        >
           {title}
         </Typography>
       </Link>
@@ -77,4 +85,5 @@ AnalyticsWidgetSummary.propTypes = {
   title: PropTypes.string,
   total: PropTypes.number,
   path: PropTypes.string,
+  href: PropTypes.string,
 };

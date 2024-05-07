@@ -1,26 +1,28 @@
 import axios from 'axios';
 import { getAuthHeader } from 'src/auth/context/jwt/utils';
-
-const BACKEND_CALL_URL = 'http://localhost:8080/api/v1';
+import { HOST_ADDRESS } from './host';
 
 export async function getAllLocations() {
-  return axios.get(`${BACKEND_CALL_URL}/location/`,getAuthHeader()).then((res) => res.data);
+  return axios.get(`${HOST_ADDRESS}/location/`, getAuthHeader()).then((res) => res.data);
 }
 export async function createNewLocation(locationData) {
+  console.log(locationData);
   return axios
-    .post(`${BACKEND_CALL_URL}/location/createLocation/`, locationData)
+    .post(`${HOST_ADDRESS}/location/CreateLocation/`, locationData, getAuthHeader())
     .then((res) => res.data);
 }
 export async function updateLocation(locationData) {
   return axios
-    .put(`${BACKEND_CALL_URL}/location/updateEmployee`, locationData)
+    .put(`${HOST_ADDRESS}/location/updateLocation`, locationData, getAuthHeader())
     .then((res) => res.data);
 }
 export async function deleteLocationWithId(locationId) {
-  return axios.delete(`${BACKEND_CALL_URL}/location/${locationId}`).then((res) => res.data);
+  return axios
+    .delete(`${HOST_ADDRESS}/location/${locationId}`, getAuthHeader())
+    .then((res) => res.data);
 }
 export async function deleteLocationsWithIds(locationIds) {
   return axios
-    .delete(`${BACKEND_CALL_URL}/location/deleteSelected`, { data: locationIds })
+    .delete(`${HOST_ADDRESS}/location/deleteSelected`, { data: locationIds }, getAuthHeader())
     .then((res) => res.data);
 }

@@ -8,25 +8,35 @@ import FormProvider from 'src/components/hook-form/form-provider';
 import { Alert, AlertTitle, Box, Card, Grid, Stack } from '@mui/material';
 import { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { LoadingButton } from '@mui/lab';
+import { useCreateEmployee } from 'src/queries/EmployeeQueries';
+import { useEmployeeContext } from 'src/context/EmployeeContext';
 // components
 
 function AddEmployee() {
   const [done, setDone] = useState(false);
-
-  const NewTypesSchema = Yup.object().shape({
-    Employee_Name: Yup.string().max(50).required('Employee Name is required'),
+  const createEmployeeMutation = useCreateEmployee();
+  const { setAddedFlag } = useEmployeeContext();
+  const NewEmployeeSchema = Yup.object().shape({
+    employee_name: Yup.string().max(50).required('Employee Name is required'),
+    employeeCode: Yup.string().max(50).required('Employee Code is required'),
+    employee_dept: Yup.string().max(50).required('Employee Department is required'),
+    employee_pass: Yup.string().max(50).required('Employee Password is required'),
+    role: Yup.string().max(50).required('Employee Rolw is required'),
     status: Yup.string().required('Status is required'),
   });
   const defaultValues = useMemo(
     () => ({
-      Types_name: '',
-      Types_desc: '',
+      employee_name: '',
+      employeeCode: '',
+      employee_dept: '',
+      employee_pass: '',
+      role: '',
       status: 'ACTIVE',
     }),
     []
   );
   const methods = useForm({
-    resolver: yupResolver(NewTypesSchema),
+    resolver: yupResolver(NewEmployeeSchema),
     defaultValues,
   });
   const popover = usePopover();
@@ -40,7 +50,16 @@ function AddEmployee() {
   } = methods;
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log('data', data);
+      const obj = {
+        employee_name: data.employee_name,
+        employeeCode: data.employeeCode,
+        employee_dept: data.employee_dept,
+        employee_pass: data.employee_pass,
+        role: data.role,
+        status: data.status === 'ACTIVE',
+      };
+      await createEmployeeMutation.mutateAsync(obj);
+      setAddedFlag(true);
     } catch (error) {
       alert('Check your internet connectivity');
       console.log('error in handleSubmit of Add Employee');
@@ -60,7 +79,11 @@ function AddEmployee() {
               sm: 'repeat(2, 1fr)',
             }}
           >
-            <RHFTextField name="Types_name" label="Employee Name *" />
+            <RHFTextField name="employee_name" label="Employee Name *" />
+            <RHFTextField name="employeeCode" label="Employee Code *" />
+            <RHFTextField name="employee_dept" label="Employee Department *" />
+            <RHFTextField name="employee_pass" label="Employee Password *" />
+            <RHFTextField name="role" label="Employee Role *" />
             <RHFAutocomplete
               name="status"
               label="Current Status *"
@@ -83,13 +106,13 @@ function AddEmployee() {
           {done && (
             <Alert severity="success">
               <AlertTitle>Success</AlertTitle>
-              onSubmit Types has been added!
+              Employee has been added!
             </Alert>
           )}
 
           <Stack alignItems="flex-end" sx={{ mt: 3 }}>
             <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-              Add Types
+              Add Employee
             </LoadingButton>
           </Stack>
         </Card>

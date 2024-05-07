@@ -1,4 +1,10 @@
-1) Add colored status of active or inactive for all masters
-2) make better contrast
-3) role mapping in backend
-4) loading for delete
+1) Start-End date - different dates in backend - sort by required_by (Done)
+2) Add request , view request (Done)
+3) applyFilter - search (Done)
+4) data < 5 still show full table
+5) Arrange Menu options according to status of data
+6) Filters Table Toolbar (Done)
+7) User Role wise rendering
+8) UI of Reset Filter
+9) Put Employee Code with Employee Name in Dropdown
+10) Don't show options with status false

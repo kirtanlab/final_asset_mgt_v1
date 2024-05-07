@@ -8,6 +8,9 @@ import Typography from '@mui/material/Typography';
 import { useAuthContext } from 'src/auth/hooks';
 import { useSettingsContext } from 'src/components/settings';
 
+import { LoadingScreen, SplashScreen } from 'src/components/loading-screen';
+import { useGetAllCategories } from 'src/queries/CategoryQueries';
+import { useGetCount } from 'src/queries/AssetRequestQueries';
 import AnalyticsWidgetSummary from '../analytics-widget-summary';
 
 // ----------------------------------------------------------------------
@@ -15,74 +18,91 @@ import AnalyticsWidgetSummary from '../analytics-widget-summary';
 export default function OneView() {
   const settings = useSettingsContext();
   const { user } = useAuthContext();
-  console.log('user', user);
+  const {
+    data: getAllCategoryData,
+    error: getAllCategoryError,
+    isLoading: getAllCategoryLoading,
+    isSuccess: getAllCategorySuccess,
+  } = useGetCount();
+
   const md = 2;
+  if (getAllCategoryLoading) return <LoadingScreen />;
+  console.log('count', getAllCategoryData);
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={md}>
           <AnalyticsWidgetSummary
-            path="Category"
-            title="Weekly Sales"
-            total={714000}
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={md}>
-          <AnalyticsWidgetSummary
             title="Total Employees"
-            total={1352831}
+            total={getAllCategoryData?.employeeCount ? getAllCategoryData?.employeeCount : 0}
+            href="Employees"
             color="info"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
+          // icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
           />
         </Grid>
 
         <Grid item xs={12} sm={6} md={md}>
           <AnalyticsWidgetSummary
             title="Total Locations"
-            total={1723315}
+            total={getAllCategoryData?.locationCount ? getAllCategoryData?.locationCount : 0}
             color="warning"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
+            href="Locations"
+          // icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
           />
         </Grid>
 
         <Grid item xs={12} sm={6} md={md}>
           <AnalyticsWidgetSummary
             title="Total Categories"
-            total={234}
+            total={getAllCategoryData?.categoryCount ? getAllCategoryData?.categoryCount : 0}
             color="error"
+            href="Category"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={md}>
           <AnalyticsWidgetSummary
             title="Total Types"
-            total={234}
+            total={getAllCategoryData?.typeCount ? getAllCategoryData?.typeCount : 0}
             color="error"
+            href="Types"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={md}>
           <AnalyticsWidgetSummary
             title="Total Classifications"
-            total={234}
+            total={getAllCategoryData?.classCount ? getAllCategoryData?.classCount : 0}
             color="error"
+            href="Classifications"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={md}>
           <AnalyticsWidgetSummary
             title="Total requests"
-            total={234}
+            href="AssetRequest"
+            total={
+              getAllCategoryData?.assetRequestCount ? getAllCategoryData?.assetRequestCount : 0
+            }
             color="error"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={md}>
+        {/* <Grid item xs={12} sm={6} md={md}>
           <AnalyticsWidgetSummary
             title="Total Allocated Assets"
-            total={234}
+            href="AssetRequest"
+            total={getAllCategoryData.assetRequestCount}
+            color="error"
+            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
+          />
+        </Grid> */}
+        <Grid item xs={12} sm={6} md={md}>
+          <AnalyticsWidgetSummary
+            title="Total Adhoc Requests"
+            href="Adhoc_Asset_Request"
+            total={getAllCategoryData?.adhocCount ? getAllCategoryData?.adhocCount : 0}
             color="error"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />

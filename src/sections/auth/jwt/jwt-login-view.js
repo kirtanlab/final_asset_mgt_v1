@@ -27,7 +27,7 @@ import { useLoginEmployee } from 'src/queries/EmployeeQueries';
 import { setSession } from 'src/auth/context/jwt/utils';
 import { useAuth } from 'src/auth/context/jwt/auth-provider';
 import { useThrottle } from 'yet-another-react-lightbox';
-import {useSnackbar} from 'src/components/snackbar'
+import { useSnackbar } from 'src/components/snackbar';
 // ----------------------------------------------------------------------
 
 export default function JwtLoginView() {
@@ -39,8 +39,8 @@ export default function JwtLoginView() {
   });
 
   const defaultValues = {
-    email: '10231',
-    password: 'GeneratedPassword123',
+    email: '110',
+    password: 'pass123456',
   };
 
   const methods = useForm({
@@ -57,14 +57,16 @@ export default function JwtLoginView() {
   );
   useEffect(() => {
     if (isError) {
-      enqueueSnackbar('Please check your internet connection!', { variant: "error", color: "error", anchorOrigin: { vertical: 'top', horizontal: 'center' }, })
+      enqueueSnackbar('Please check your internet connection!', {
+        variant: 'error',
+        color: 'error',
+        anchorOrigin: { vertical: 'top', horizontal: 'center' },
+      });
     }
-  }, [enqueueSnackbar, isError])
+  }, [enqueueSnackbar, isError]);
 
   const renderForm = (
     <Stack spacing={2.5}>
-      
-
       <RHFTextField name="email" label="Employee Code" />
 
       <RHFTextField
@@ -95,7 +97,7 @@ export default function JwtLoginView() {
         Login
       </LoadingButton>
       {/* {isError ? (
-        
+
         // <Alert severity="error">
         //   {ResError?.response?.status === 401
         //     ? 'Invalid Credentials'

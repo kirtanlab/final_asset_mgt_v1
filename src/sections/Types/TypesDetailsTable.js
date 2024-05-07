@@ -35,10 +35,12 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import CustomDialog from 'src/components/Dialog/dialog';
 import TypesDetailsTableRow from './TypesDetailsTableRow';
 import AddTypes from './addTypes';
+import TypeTableToolbar from './type-table-toolbar';
 
 export default function TypesDetailsTable({ title, tableLabels, Categories_Data, subheader }) {
   const defaultFilters = {
-    Types_name: '',
+    name: '',
+    active: 'All',
   };
   const [filters, setFilters] = useState(defaultFilters);
   const table = useTable({ defaultOrderBy: 'createDate' });
@@ -52,6 +54,13 @@ export default function TypesDetailsTable({ title, tableLabels, Categories_Data,
         filters,
       })
     : {};
+  const {
+    mutateAsync: DeleteMutation,
+    isLoading: DeleteLoading,
+    isError: DeleteError,
+    error: ResError,
+    isSuccess: DeletedSuccess,
+  } = useDeleteType();
   const denseHeight = table.dense ? 56 : 76;
   const canReset =
     !!filters.name ||
@@ -77,38 +86,12 @@ export default function TypesDetailsTable({ title, tableLabels, Categories_Data,
   );
   return (
     <Card>
-      <Grid container alignItems="center" flexDirection="row">
-        <CardHeader title={title} subheader={subheader} sx={{ flex: 1 }} />
-        <Stack sx={{ paddingTop: 3, flexDirection: 'row', flex: 1, marginRight: 3 }}>
-          <Stack sx={{ width: '150%' }}>
-            <TextField
-              value={filters.name}
-              onChange={handleFilterName}
-              placeholder="Search type name / type description / category name ..."
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Iconify icon="eva:search-fill" sx={{}} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ width: '100%' }}
-            />
-          </Stack>
+      <TypeTableToolbar
+        filters={filters}
+        onFilters={onFilters}
+        placeHolder="Search type name / type description / category name ..."
+      />
 
-          <Button
-            sx={{ pt: 2, width: 200 }}
-            size="medium"
-            color="inherit"
-            onClick={() => {
-              setAddTypes(true);
-            }}
-            endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
-          >
-            Add Types
-          </Button>
-        </Stack>
-      </Grid>
       <Grid sx={{ mt: 3 }}>
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
           <TableSelectedAction
@@ -162,6 +145,7 @@ export default function TypesDetailsTable({ title, tableLabels, Categories_Data,
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
                       confirm={confirm}
+                      onDeleteRow={DeleteMutation}
                     />
                   ))}
                 <TableEmptyRows
@@ -203,7 +187,7 @@ TypesDetailsTable.propTypes = {
   Categories_Data: PropTypes.array,
 };
 function applyFilter({ inputData, comparator, filters }) {
-  const { name } = filters;
+  const { name, active } = filters;
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
@@ -213,14 +197,20 @@ function applyFilter({ inputData, comparator, filters }) {
   });
 
   inputData = stabilizedThis.map((el) => el[0]);
-
-  // console.log('inputData' , inputData)
+  if (active !== 'All') {
+    inputData = inputData.filter((Types) => {
+      const fieldValue = Types.status ? 'Active' : 'Inactive';
+      return fieldValue && fieldValue === active;
+    });
+  }
+  console.log('inputData', inputData, name);
   if (name) {
     inputData = inputData.filter(
       (Types) =>
-        Types.type_name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        Types.type_description.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        Types.category_name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        Types?.type_name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        Types?.type_desc.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        Types?.category_id?.category_name?.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        Types?.class_id?.class_name?.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
 

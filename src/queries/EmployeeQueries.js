@@ -64,6 +64,7 @@ export const useGetAllEmployees = () =>
     retry: 1,
     refetchOnReconnect: 'always',
     refetchInterval: 1000 * 60 * 0.2,
+    refetchOnWindowFocus: false,
   });
 
 export const useCreateEmployee = () => {
@@ -94,8 +95,11 @@ export const useDeleteEmployeeWithId = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation(deleteEmployeeWithId, {
-    onSuccess: () => {
-      queryClient.refetchQueries(['AllEmployee']);
+    onSuccess: async () => {
+      await Promise.all([queryClient.refetchQueries(['AllEmployee'])]);
+    },
+    onError: (e) => {
+      console.log(e);
     },
   });
   return mutation;
@@ -104,8 +108,11 @@ export const useDeleteEmployeeWithId = () => {
 export const useDeleteEmployeeWithIds = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation(deleteEmployeeWithIds, {
-    onSuccess: () => {
-      queryClient.refetchQueries(['AllEmployee']);
+    onSuccess: async () => {
+      await Promise([queryClient.refetchQueries(['AllEmployee'])]);
+    },
+    onError: (e) => {
+      console.log(e);
     },
   });
   return mutation;

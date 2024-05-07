@@ -1,0 +1,28 @@
+export const mock_req_data = [
+    {
+        id: 1,
+        details: 'Car Nicobar Air Force Station',
+        reason: 'Ford',
+        required_by: '12/02/22',
+        type_id: 1,
+        category_id: 1,
+        classification_id: 1,
+        employee_id: 82,
+        location_id: 1,
+        reporting_to_id: 2,
+        status: 'PENDING',
+    },
+    {
+        id: 2,
+        details: 'Car Air Force Station',
+        reason: 'Ford sfdgfgf',
+        required_by: '18/05/22',
+        type_id: 1,
+        category_id: 1,
+        classification_id: 1,
+        employee_id: 82,
+        location_id: 1,
+        reporting_to_id: 2,
+        status: 'APPROVED',
+    },
+]

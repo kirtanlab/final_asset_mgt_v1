@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 
 // ----------------------------------------------------------------------
 
-export default function RHFTextField({ name, helperText, type, ...other }) {
+export default function RHFTextField({ disabled, name, helperText, type, ...other }) {
   const { control } = useFormContext();
 
   return (
@@ -14,6 +14,7 @@ export default function RHFTextField({ name, helperText, type, ...other }) {
       control={control}
       render={({ field, fieldState: { error } }) => (
         <TextField
+          disabled={disabled}
           {...field}
           fullWidth
           type={type}
@@ -36,6 +37,7 @@ export default function RHFTextField({ name, helperText, type, ...other }) {
 }
 
 RHFTextField.propTypes = {
+  disabled: PropTypes.object,
   helperText: PropTypes.object,
   name: PropTypes.string,
   type: PropTypes.string,

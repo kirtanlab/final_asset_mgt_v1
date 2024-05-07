@@ -115,7 +115,7 @@ function EditCategories({ row }) {
             {updateCategoryMutation.isSuccess && (
               <Alert severity="success">
                 <AlertTitle>Success</AlertTitle>
-                Category has been added!
+                Category has been edited!
               </Alert>
             )}
             {updateCategoryMutation.isError && (
@@ -130,6 +130,7 @@ function EditCategories({ row }) {
                 type="submit"
                 variant="contained"
                 loading={updateCategoryMutation.isLoading}
+                disabled={updateCategoryMutation.isSuccess}
               >
                 Edit Category
               </LoadingButton>

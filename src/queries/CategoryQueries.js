@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createNewCategory,
   deleteCategoryWithId,
@@ -7,12 +7,14 @@ import {
   updateCategory,
 } from 'src/apis/CategoryApis';
 
-export const useGetAllCategories = () =>
-  useQuery(['AllCategory'], getAllCategories, {
-    retry: 1,
-    refetchOnReconnect: 'always',
-    refetchInterval: 1000 * 60 * 5,
+const seconds = 1000;
+export const useGetAllCategories = () => {
+  const queryClient = useQueryClient();
+  // console.log('queryClient', queryClient.getQueryData(['AllCategory']));
+  return useQuery(['AllCategory'], getAllCategories, {
+    placeholderData: queryClient.getQueryData(['AllCategory']),
   });
+};
 
 export const useCreateCategory = () => {
   const queryClient = useQueryClient();
@@ -42,8 +44,11 @@ export const useDeleteCategoryWithId = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation(deleteCategoryWithId, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['AllCategory']);
+    onSuccess: async () => {
+      await Promise.all([queryClient.refetchQueries(['AllCategory'])]);
+    },
+    onError: (e) => {
+      console.log(e);
     },
   });
   return mutation;
@@ -52,8 +57,11 @@ export const useDeleteCategoryWithId = () => {
 export const useDeleteCategoryWithIds = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation(deleteCategoryWithIds, {
-    onSuccess: () => {
-      queryClient.refetchQueries(['AllCategory']);
+    onSuccess: async () => {
+      await Promise.all([queryClient.refetchQueries(['AllCategory'])]);
+    },
+    onError: (e) => {
+      console.log(e);
     },
   });
   return mutation;

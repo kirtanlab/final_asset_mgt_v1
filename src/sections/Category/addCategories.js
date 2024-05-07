@@ -113,6 +113,7 @@ function AddCategories() {
                 type="submit"
                 variant="contained"
                 loading={createCategoryMutation.isLoading}
+                disabled={createCategoryMutation.isSuccess}
               >
                 Add Category
               </LoadingButton>

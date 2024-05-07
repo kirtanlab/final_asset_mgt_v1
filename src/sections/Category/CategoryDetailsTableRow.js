@@ -19,6 +19,8 @@ import { LoadingScreen } from 'src/components/loading-screen';
 import CustomDialog from 'src/components/Dialog/dialog';
 import { useDeleteCategoryWithId, useDeleteCategoryWithIds } from 'src/queries/CategoryQueries';
 import { useSnackbar } from 'src/components/snackbar';
+import Label from 'src/components/label';
+import { LoadingButton } from '@mui/lab';
 import EditCategories from './editCategories';
 
 // import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -31,13 +33,15 @@ const CategoryDetailsTableRow = ({
   onEditRow,
   onDeleteRow,
   table,
+  DeleteLoading,
+  DeletedSuccess,
   confirm,
 }) => {
   const [editCategory, setEditCategory] = useState(false);
   const popover = usePopover();
   const rowConfirm = useBoolean();
   const deleteCategoryWithIds = useDeleteCategoryWithIds();
-
+  console.log('loading deletion:', DeleteLoading);
   return (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
@@ -78,15 +82,17 @@ const CategoryDetailsTableRow = ({
         />
       </TableCell>
       <TableCell>
-        <ListItemText
-          primary={row?.status === true ? 'Active' : 'Inactive'}
-          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-          secondaryTypographyProps={{
-            mt: 0.5,
-            component: 'span',
-            typography: 'caption',
-          }}
-        />
+        <Label variant="soft" color={(row?.status === true ? 'success' : 'error') || 'default'}>
+          <ListItemText
+            primary={row?.status === true ? 'Active' : 'Inactive'}
+            primaryTypographyProps={{ typography: 'body2', noWrap: true }}
+            secondaryTypographyProps={{
+              mt: 0.5,
+              component: 'span',
+              typography: 'caption',
+            }}
+          />
+        </Label>
       </TableCell>
       <TableCell sx={{ pr: 0 }}>
         <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
@@ -127,10 +133,12 @@ const CategoryDetailsTableRow = ({
             rowConfirm.onTrue();
             popover.onClose();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{ color: row?.status === true ? 'error.main' : 'success.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
+          <Iconify
+            icon={row?.status === false ? 'eva:done-all-outline' : 'solar:trash-bin-trash-bold'}
+          />
+          {row?.status === true ? 'Deactivate' : 'Active'}
         </MenuItem>
       </CustomPopover>
       <CustomDialog
@@ -142,23 +150,25 @@ const CategoryDetailsTableRow = ({
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title={row?.status === true ? 'Deactivate' : 'Active'}
         content={
           <>
-            Are you sure want to delete <strong> {table.selected.length} </strong> items?
+            Are you sure want to {row?.status === true ? 'deactivate' : 'activate'}
+            <strong> {table.selected.length} </strong> items?
           </>
         }
         action={
           <Button
             variant="contained"
-            color="error"
+            color={row?.status === true ? 'error' : 'success'}
             onClick={async () => {
               try {
                 const obj = {
                   ids: table.selected,
                 };
                 console.log('obj', obj);
-                await deleteCategoryWithIds.mutateAsync(obj);
+                const res = await deleteCategoryWithIds.mutateAsync(obj);
+                console.log('res: ', res);
                 confirm.onFalse();
                 table.setSelected([]);
               } catch (error) {
@@ -169,23 +179,29 @@ const CategoryDetailsTableRow = ({
               }
             }}
           >
-            Delete
+            Deactivate
           </Button>
         }
       />
       <ConfirmDialog
         open={rowConfirm.value}
         onClose={rowConfirm.onFalse}
-        title="Delete"
-        content={<>Are you sure want to delete this item?</>}
+        title={row?.status === true ? 'Deactivate' : 'Active'}
+        content={
+          <>Are you sure want to {row?.status === true ? 'deactivate' : 'activate'} this item?</>
+        }
         action={
-          <Button
+          <LoadingButton
             variant="contained"
-            color="error"
+            loading={DeleteLoading}
+            color={row?.status === true ? 'error' : 'success'}
             onClick={async () => {
               try {
+                const res = await onDeleteRow(row.id);
+
                 rowConfirm.onFalse();
-                await onDeleteRow(row.id);
+
+                console.log('res: ', res);
               } catch (error) {
                 alert('Check your internet connectivity');
                 console.log('error in handleSubmit of Add Categories');
@@ -193,8 +209,8 @@ const CategoryDetailsTableRow = ({
               }
             }}
           >
-            Delete
-          </Button>
+            {row?.status === true ? 'Deactivate' : 'Activate'}
+          </LoadingButton>
         }
       />
     </TableRow>
@@ -203,6 +219,8 @@ const CategoryDetailsTableRow = ({
 
 CategoryDetailsTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
+  DeletedSuccess: PropTypes.func,
+  DeleteLoading: PropTypes.func,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
   onViewRow: PropTypes.func,

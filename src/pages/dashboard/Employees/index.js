@@ -1,5 +1,4 @@
 import { Helmet } from 'react-helmet-async';
-
 import EmployeeList from 'src/sections/Employees/view/employees_details_table';
 
 // ----------------------------------------------------------------------

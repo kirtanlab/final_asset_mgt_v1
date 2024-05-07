@@ -62,7 +62,7 @@ export default function LocationList() {
           tableLabels={[
             { id: 'id', label: 'ID' },
             { id: 'location_name', label: 'Location name' },
-            { id: 'company_name', label: 'Category name' },
+            { id: 'company_name', label: 'Company name' },
             { id: 'department_name', label: 'Department name' },
             { id: 'status', label: 'Status' },
             { id: 'options', label: 'Options' },

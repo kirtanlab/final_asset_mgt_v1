@@ -8,21 +8,39 @@ import FormProvider from 'src/components/hook-form/form-provider';
 import { Alert, AlertTitle, Box, Card, Grid, Stack } from '@mui/material';
 import { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { LoadingButton } from '@mui/lab';
+import { useGetAllClassification } from 'src/queries/ClassificationQueries';
+import { useGetAllCategories } from 'src/queries/CategoryQueries';
+import { useCreateType } from 'src/queries/TypesQueries';
 // components
 
 function AddTypes() {
   const [done, setDone] = useState(false);
-
+  const {
+    isSuccess: getAllClassificationIsSuccess,
+    data: getAllClassificationData,
+    error: getAllClassificationError,
+    isLoading: isLoadingClassification,
+  } = useGetAllClassification();
+  const {
+    isLoading: getAllCategoriesIsLoading,
+    data: getAllCategoriesData,
+    error: getAllCategoriesError,
+  } = useGetAllCategories();
+  const createTypeMutation = useCreateType();
   const NewTypesSchema = Yup.object().shape({
-    Types_name: Yup.string().max(50).required('Types Name is required'),
-    Types_desc: Yup.string().max(250).required('Description is required'),
+    type_name: Yup.string().max(50).required('Types Name is required'),
+    type_desc: Yup.string().max(250).required('Description is required'),
+    category_id: Yup.string().max(250).required('category is required'),
+    class_id: Yup.string().max(250).required('classification is required'),
     status: Yup.string().required('Status is required'),
   });
   const defaultValues = useMemo(
     () => ({
-      Types_name: '',
-      Types_desc: '',
+      type_name: '',
+      type_desc: '',
       status: 'ACTIVE',
+      class_id: '',
+      category_id: '',
     }),
     []
   );
@@ -41,13 +59,29 @@ function AddTypes() {
   } = methods;
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log('data', data);
+      const obj = {
+        type_name: data.type_name,
+        type_desc: data.type_desc,
+        status: data.status === 'ACTIVE',
+        class_id: getAllClassificationData.data.find((x) => x?.class_name === data.class_id).id,
+        category_id: getAllCategoriesData.data.find((x) => x?.category_name === data.category_id)
+          .id,
+      };
+      console.log('data', obj);
+      await createTypeMutation.mutateAsync(obj);
     } catch (error) {
       alert('Check your internet connectivity');
       console.log('error in handleSubmit of Add Categories');
       console.log('error: ', error);
     }
   });
+  if (isLoadingClassification || getAllCategoriesIsLoading) {
+    return <div>Loading...</div>;
+  }
+  if (getAllClassificationError || getAllCategoriesError) {
+    return <div>Error with fetching data table </div>;
+  }
+  console.log('categories Data: ', getAllClassificationData, getAllCategoriesData);
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid xs={12} md={10}>
@@ -61,8 +95,8 @@ function AddTypes() {
               sm: 'repeat(2, 1fr)',
             }}
           >
-            <RHFTextField name="Types_name" label="Types Name *" />
-            <RHFTextField name="Types_desc" label="Types Description *" />
+            <RHFTextField name="type_name" label="Types Name *" />
+            <RHFTextField name="type_desc" label="Types Description *" />
             <RHFAutocomplete
               name="status"
               label="Current Status *"
@@ -81,16 +115,65 @@ function AddTypes() {
                 );
               }}
             />
+            <RHFAutocomplete
+              name="category_id"
+              label="Category *"
+              options={getAllCategoriesData.data.map((x) => x?.category_name)}
+              getOptionLabel={(option) => option}
+              isOptionEqualToValue={(option, value) => option === value}
+              renderOption={(props, option) => {
+                const options = getAllCategoriesData.data.map((x) => x?.category_name);
+                const label = options.filter((item) => item === option)[0];
+                if (!label) {
+                  return null;
+                }
+                return (
+                  <li {...props} key={label}>
+                    {label}
+                  </li>
+                );
+              }}
+            />
+            <RHFAutocomplete
+              name="class_id"
+              label="Classifications *"
+              options={getAllClassificationData.data.map((x) => x?.class_name)}
+              getOptionLabel={(option) => option}
+              isOptionEqualToValue={(option, value) => option === value}
+              renderOption={(props, option) => {
+                const options = getAllClassificationData.data.map((x) => x?.class_name);
+                const label = options.filter((item) => item === option)[0];
+                if (!label) {
+                  return null;
+                }
+                return (
+                  <li {...props} key={label}>
+                    {label}
+                  </li>
+                );
+              }}
+            />
           </Box>
-          {done && (
+
+          {/* {done && (
             <Alert severity="success">
               <AlertTitle>Success</AlertTitle>
               onSubmit Types has been added!
             </Alert>
+          )} */}
+          {createTypeMutation.isSuccess && (
+            <Alert severity="success">
+              <AlertTitle>Success</AlertTitle>
+              Type has been added!
+            </Alert>
           )}
-
           <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-            <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+            <LoadingButton
+              disabled={createTypeMutation.isSuccess}
+              type="submit"
+              variant="contained"
+              loading={createTypeMutation.isLoading}
+            >
               Add Types
             </LoadingButton>
           </Stack>

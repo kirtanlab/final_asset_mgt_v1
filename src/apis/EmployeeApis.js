@@ -1,33 +1,34 @@
 import axios from 'axios';
 import { getAuthHeader } from 'src/auth/context/jwt/utils';
-
-const BACKEND_CALL_URL = 'http://localhost:8080/api/v1';
+import { HOST_ADDRESS } from './host';
 
 export async function testEmployee() {
-  return axios.get(`${BACKEND_CALL_URL}/employee/test/`, getAuthHeader()).then((res) => res.data);
+  return axios.get(`${HOST_ADDRESS}/employee/test/`, getAuthHeader()).then((res) => res.data);
 }
 
 export async function getAllEmployee() {
-  return axios.get(`${BACKEND_CALL_URL}/employee/`, getAuthHeader()).then((res) => {
+  return axios.get(`${HOST_ADDRESS}/employee/`, getAuthHeader()).then((res) => {
     console.log('employees data', res);
     return res.data;
   });
 }
 export async function createNewEmployee(employeeData) {
   return axios
-    .post(`${BACKEND_CALL_URL}/employee/createEmployee/`, employeeData)
+    .post(`${HOST_ADDRESS}/employee/CreateEmployee/`, employeeData, getAuthHeader())
     .then((res) => res.data);
 }
 export async function updateEmployee(employeeData) {
   return axios
-    .put(`${BACKEND_CALL_URL}/employee/updateEmployee`, employeeData)
+    .put(`${HOST_ADDRESS}/employee/updateEmployee`, employeeData, getAuthHeader())
     .then((res) => res.data);
 }
 export async function deleteEmployeeWithId(employeeId) {
-  return axios.delete(`${BACKEND_CALL_URL}/employee/${employeeId}`).then((res) => res.data);
+  return axios
+    .delete(`${HOST_ADDRESS}/employee/${employeeId}`, getAuthHeader())
+    .then((res) => res.data);
 }
 export async function deleteEmployeeWithIds(employeeIds) {
   return axios
-    .delete(`${BACKEND_CALL_URL}/employee/deleteSelected`, { data: employeeIds })
+    .delete(`${HOST_ADDRESS}/employee/deleteSelected`, { data: employeeIds }, getAuthHeader())
     .then((res) => res.data);
 }

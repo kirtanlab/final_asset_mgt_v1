@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -31,19 +31,29 @@ import {
   useTable,
 } from 'src/components/table';
 import { useBoolean } from 'src/hooks/use-boolean';
+import { mock_classifications_data } from 'src/_mock/_classifications';
+import { useSnackbar } from 'src/components/snackbar';
+import { useDeleteClassificationWithId } from 'src/queries/ClassificationQueries';
 
 import CustomDialog from 'src/components/Dialog/dialog';
-import classDetailsTableRow from './classDetailsTableRow';
-import addClassifications from './addClassifications';
+import ClassificationsDetailsTableRow from './ClassificationsDetailsTableRow';
+import AddClassifications from './addClassifications';
+import ClassTableToolbar from './class-table-toolbar';
 
-export default function ClassesDetailsTable({ title, tableLabels, Classes_Data, subheader }) {
+export default function ClassificationDetailsTable({
+  title,
+  table,
+  tableLabels,
+  Classes_Data: tableData,
+  subheader,
+}) {
   const defaultFilters = {
-    classes_name: '',
+    name: '',
+    active: 'All',
   };
   const [filters, setFilters] = useState(defaultFilters);
-  const table = useTable({ defaultOrderBy: 'createDate' });
+  const { enqueueSnackbar } = useSnackbar();
   const confirm = useBoolean();
-  const [tableData, setTableData] = useState(Categories_Data);
   const [addClass, setAddClass] = useState(false);
   const dataFiltered = tableData
     ? applyFilter({
@@ -56,7 +66,7 @@ export default function ClassesDetailsTable({ title, tableLabels, Classes_Data, 
   const canReset =
     !!filters.name ||
     !!filters.service?.length ||
-    filters.status !== 'all' ||
+    filters.active !== 'All' ||
     (!!filters.startDate && !!filters.endDate);
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
   const onFilters = useCallback(
@@ -75,40 +85,38 @@ export default function ClassesDetailsTable({ title, tableLabels, Classes_Data, 
     },
     [onFilters]
   );
+  const {
+    mutateAsync: DeleteMutation,
+    isLoading: DeleteLoading,
+    isError: DeleteError,
+    error: ResError,
+    isSuccess: DeletedSuccess,
+  } = useDeleteClassificationWithId();
+  useEffect(() => {
+    if (DeleteError) {
+      enqueueSnackbar('Please check your internet connection!', {
+        variant: 'error',
+        color: 'error',
+        anchorOrigin: { vertical: 'top', horizontal: 'center' },
+      });
+    }
+    if (DeletedSuccess) {
+      enqueueSnackbar('Classification Deactivated successfully!', {
+        variant: 'success',
+        color: 'success',
+        anchorOrigin: { vertical: 'top', horizontal: 'center' },
+      });
+    }
+  }, [enqueueSnackbar, DeleteError, DeletedSuccess]);
+  console.log('Filters parents: ', filters);
   return (
     <Card>
-      <Grid container alignItems="center" flexDirection="row">
-        <CardHeader title={title} subheader={subheader} sx={{ flex: 1 }} />
-        <Stack sx={{ paddingTop: 3, flexDirection: 'row', flex: 1, marginRight: 6 }}>
-          <Stack sx={{ width: '100%', paddingRight: 2 }}>
-            <TextField
-              value={filters.name}
-              onChange={handleFilterName}
-              placeholder="Search classifications name or description ..."
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Iconify icon="eva:search-fill" sx={{}} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ width: '100%' }}
-            />
-          </Stack>
+      <ClassTableToolbar
+        filters={filters}
+        onFilters={onFilters}
+        placeHolder="Search classifications name or description ..."
+      />
 
-          <Button
-            sx={{ pt: 2, width: 200 }}
-            size="medium"
-            color="inherit"
-            onClick={() => {
-              setAddClass(true);
-            }}
-            endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
-          >
-            Add Classifications
-          </Button>
-        </Stack>
-      </Grid>
       <Grid sx={{ mt: 3 }}>
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
           <TableSelectedAction
@@ -149,26 +157,28 @@ export default function ClassesDetailsTable({ title, tableLabels, Classes_Data, 
               />
 
               <TableBody>
+                {/* {DeleteLoading && <div />} */}
                 {dataFiltered
                   .slice(
                     table.page * table.rowsPerPage,
                     table.page * table.rowsPerPage + table.rowsPerPage
                   )
                   .map((row) => (
-                    <Classficat
+                    <ClassificationsDetailsTableRow
                       key={row.id}
                       row={row}
                       table={table}
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
+                      onDeleteRow={DeleteMutation}
+                      DeleteLoading={DeleteLoading}
+                      DeletedSuccess={DeletedSuccess}
                       confirm={confirm}
                     />
                   ))}
-                <TableEmptyRows
-                  height={denseHeight}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
-                />
-
+                {/* {!notFound && !DeleteLoading && ( */}
+                <TableEmptyRows height={denseHeight} emptyRows={5 - tableData.length} />
+                {/* )} */}
                 <TableNoData notFound={notFound} />
               </TableBody>
             </Table>
@@ -180,7 +190,7 @@ export default function ClassesDetailsTable({ title, tableLabels, Classes_Data, 
           openFlag={addClass}
           setonClose={() => setAddClass(false)}
           placeHolder="Add New Class"
-          component={<addClassifications />}
+          component={<AddClassifications />}
         />
         <TablePaginationCustom
           count={dataFiltered.length}
@@ -196,14 +206,15 @@ export default function ClassesDetailsTable({ title, tableLabels, Classes_Data, 
   );
 }
 
-ClassesDetailsTable.propTypes = {
+ClassificationDetailsTable.propTypes = {
   title: PropTypes.string,
   tableLabels: PropTypes.array,
+  table: PropTypes.any,
   subheader: PropTypes.string,
-  Categories_Data: PropTypes.array,
+  Classes_Data: PropTypes.array,
 };
 function applyFilter({ inputData, comparator, filters }) {
-  const { name } = filters;
+  const { name, active } = filters;
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
@@ -214,11 +225,18 @@ function applyFilter({ inputData, comparator, filters }) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  if (name) {
-    inputData = inputData.filter((classes) => {
-      classes.class_name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        classes.class_desc.toLowerCase().indexOf(name.toLowerCase()) !== -1;
+  if (active !== 'All') {
+    inputData = inputData.filter((Classes) => {
+      const fieldValue = Classes.status ? 'Active' : 'Inactive';
+      return fieldValue && fieldValue === active;
     });
+  }
+  if (name) {
+    inputData = inputData.filter(
+      (Classes) =>
+        Classes.class_name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        Classes.class_desc.toLowerCase().indexOf(name.toLowerCase()) !== -1
+    );
   }
 
   return inputData;

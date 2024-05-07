@@ -51,7 +51,7 @@ export function useNavData() {
       {
         // subheader: 'overview v5.3.0',
         items: [
-          { title: 'one', path: paths.dashboard.root, icon: ICONS.dashboard },
+          { title: 'Dashboard', path: paths.dashboard.root, icon: ICONS.dashboard },
           { title: 'Assets Categories', path: paths.dashboard.Category, icon: ICONS.ecommerce },
           { title: 'Assets Types', path: paths.dashboard.Types, icon: ICONS.banking },
           {
@@ -72,6 +72,11 @@ export function useNavData() {
           {
             title: 'Asset Requests',
             path: paths.dashboard.Asset_Request,
+            icon: ICONS.chat,
+          },
+          {
+            title: 'Adhoc Asset Requests',
+            path: paths.dashboard.Adhoc_Asset_Request,
             icon: ICONS.chat,
           },
         ],

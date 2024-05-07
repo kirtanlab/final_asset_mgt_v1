@@ -16,6 +16,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import CustomDialog from 'src/components/Dialog/dialog';
+import Label from 'src/components/label';
 import EditTypes from './editTypes';
 // import { ConfirmDialog } from 'src/components/custom-dialog';
 
@@ -66,7 +67,7 @@ const TypesDetailsTableRow = ({
       </TableCell>
       <TableCell>
         <ListItemText
-          primary={row?.type_description}
+          primary={row?.type_desc}
           primaryTypographyProps={{ typography: 'body2', noWrap: false }}
           secondaryTypographyProps={{
             mt: 0.5,
@@ -77,7 +78,7 @@ const TypesDetailsTableRow = ({
       </TableCell>
       <TableCell>
         <ListItemText
-          primary={row?.classification_name}
+          primary={row?.class_id.class_name}
           primaryTypographyProps={{ typography: 'body2', noWrap: false }}
           secondaryTypographyProps={{
             mt: 0.5,
@@ -88,7 +89,7 @@ const TypesDetailsTableRow = ({
       </TableCell>
       <TableCell>
         <ListItemText
-          primary={row?.category_name}
+          primary={row?.category_id?.category_name}
           primaryTypographyProps={{ typography: 'body2', noWrap: false }}
           secondaryTypographyProps={{
             mt: 0.5,
@@ -97,16 +98,18 @@ const TypesDetailsTableRow = ({
           }}
         />
       </TableCell>
-      <TableCell width={100}>
-        <ListItemText
-          primary={row?.status === true ? 'true' : 'false'}
-          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-          secondaryTypographyProps={{
-            mt: 0.5,
-            component: 'span',
-            typography: 'caption',
-          }}
-        />
+      <TableCell>
+        <Label variant="soft" color={(row?.status === true ? 'success' : 'error') || 'default'}>
+          <ListItemText
+            primary={row?.status === true ? 'Active' : 'Inactive'}
+            primaryTypographyProps={{ typography: 'body2', noWrap: true }}
+            secondaryTypographyProps={{
+              mt: 0.5,
+              component: 'span',
+              typography: 'caption',
+            }}
+          />
+        </Label>
       </TableCell>
       <TableCell sx={{ pr: 0 }}>
         <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
@@ -147,10 +150,12 @@ const TypesDetailsTableRow = ({
             rowConfirm.onTrue();
             popover.onClose();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{ color: row?.status === true ? 'error.main' : 'success.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
+          <Iconify
+            icon={row?.status === false ? 'eva:done-all-outline' : 'solar:trash-bin-trash-bold'}
+          />
+          {row?.status === true ? 'Deactivate' : 'Active'}
         </MenuItem>
       </CustomPopover>
       <CustomDialog
@@ -162,41 +167,68 @@ const TypesDetailsTableRow = ({
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title={row?.status === true ? 'Deactivate' : 'Active'}
         content={
           <>
-            Are you sure want to delete <strong> {table.selected.length} </strong> items?
+            Are you sure want to {row?.status === true ? 'deactivate' : 'activate'}
+            <strong> {table.selected.length} </strong> items?
           </>
         }
         action={
           <Button
             variant="contained"
-            color="error"
-            onClick={() => {
-              alert('Deleted');
-              // handleDeleteRows();
-              confirm.onFalse();
+            color={row?.status === true ? 'error' : 'success'}
+            onClick={async () => {
+              try {
+                const obj = {
+                  ids: table.selected,
+                };
+                console.log('obj', obj);
+                // const res = await deleteCategoryWithIds.mutateAsync(obj);
+                // console.log('res: ', res);
+                confirm.onFalse();
+                table.setSelected([]);
+                rowConfirm.onFalse();
+              } catch (error) {
+                alert('Check your internet connectivity');
+                console.log('error in handleSubmit of delete Categories');
+                console.log('error: ', error);
+                confirm.onFalse();
+              }
             }}
           >
-            Delete
+            Deactivate
           </Button>
         }
       />
       <ConfirmDialog
         open={rowConfirm.value}
         onClose={rowConfirm.onFalse}
-        title="Delete"
-        content={<>Are you sure want to delete this item?</>}
+        title={row?.status === true ? 'Deactivate' : 'Active'}
+        content={
+          <>Are you sure want to {row?.status === true ? 'deactivate' : 'activate'} this item?</>
+        }
         action={
-          <Button
+          <LoadingButton
             variant="contained"
-            color="error"
-            onClick={() => {
-              rowConfirm.onFalse();
+            loading={DeleteLoading}
+            color={row?.status === true ? 'error' : 'success'}
+            onClick={async () => {
+              try {
+                const res = await onDeleteRow(row.id);
+
+                rowConfirm.onFalse();
+
+                console.log('res: ', res);
+              } catch (error) {
+                alert('Check your internet connectivity');
+                console.log('error in handleSubmit of Add Categories');
+                console.log('error: ', error);
+              }
             }}
           >
-            Delete
-          </Button>
+            {row?.status === true ? 'Deactivate' : 'Activate'}
+          </LoadingButton>
         }
       />
     </TableRow>

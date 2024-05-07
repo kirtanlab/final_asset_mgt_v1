@@ -26,5 +26,6 @@ export const paths = {
     Employees: `${ROOTS.DASHBOARD}/Employees`,
     Locations: `${ROOTS.DASHBOARD}/Locations`,
     Asset_Request: `${ROOTS.DASHBOARD}/AssetRequest`,
+    Adhoc_Asset_Request: `${ROOTS.DASHBOARD}/Adhoc_Asset_Request`,
   },
 };

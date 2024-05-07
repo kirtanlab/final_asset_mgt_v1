@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -31,24 +31,34 @@ import {
   useTable,
 } from 'src/components/table';
 import { useBoolean } from 'src/hooks/use-boolean';
-
+import { useSnackbar } from 'src/components/snackbar';
 import CustomDialog from 'src/components/Dialog/dialog';
+import { useDeleteEmployeeWithId } from 'src/queries/EmployeeQueries';
+import { label } from 'yet-another-react-lightbox';
+import AddEmployee from './addEmployees';
 import EmployeeDetailsTableRow from './EmployeesDetailsTableRow';
+import EmployeeTableToolbar from './employee-table-toolbar';
 
 export default function EmployeeDetailsTable({
   title,
   table,
   tableLabels,
-  actions_data,
+  // actions_data,
   employees_data: tableData,
   subheader,
 }) {
   const defaultFilters = {
     employees_name: '',
+    active: 'All',
   };
- 
+  const STATUS_OPTIONS = [
+    { value: 'all', label: 'All' },
+    { value: 'true', label: 'Active' },
+    { value: 'false', label: 'Inactive' },
+  ];
   const [filters, setFilters] = useState(defaultFilters);
   const confirm = useBoolean();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [addEmployee, setAddEmployee] = useState(false);
   const dataFiltered = tableData
@@ -60,9 +70,9 @@ export default function EmployeeDetailsTable({
     : {};
   const denseHeight = table.dense ? 56 : 76;
   const canReset =
-    !!filters.name ||
+    !!filters.employees_name ||
     !!filters.service?.length ||
-    filters.status !== 'all' ||
+    filters.active !== 'All' ||
     (!!filters.startDate && !!filters.endDate);
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
   const onFilters = useCallback(
@@ -75,48 +85,53 @@ export default function EmployeeDetailsTable({
     },
     [table]
   );
-  const handleFilterName = useCallback(
-    (event) => {
-      onFilters('name', event.target.value);
-    },
-    [onFilters]
-  );
-  console.log('empty row for employee', emptyRows(table.page, table.rowsPerPage, tableData.length));
+  // const handleResetFilters = useCallback(() => {
+  //   setFilters(defaultFilters);
+  // }, []);
+
+  const {
+    mutateAsync: DeleteMutation,
+    isLoading: DeleteLoading,
+    isError: DeleteError,
+    error: ResError,
+    isSuccess: DeletedSuccess,
+  } = useDeleteEmployeeWithId();
+  useEffect(() => {
+    if (DeleteError) {
+      enqueueSnackbar('Please check your internet connection!', {
+        variant: 'error',
+        color: 'error',
+        anchorOrigin: { vertical: 'top', horizontal: 'center' },
+      });
+    }
+    if (DeletedSuccess) {
+      enqueueSnackbar('Employee Deactivated successfully!', {
+        variant: 'success',
+        color: 'success',
+        anchorOrigin: { vertical: 'top', horizontal: 'center' },
+      });
+    }
+  }, [enqueueSnackbar, DeleteError, DeletedSuccess]);
+  // console.log('empty row for employee', emptyRows(table.page, table.rowsPerPage, tableData.length));
   return (
     <Card>
-      <Grid container alignItems="center" flexDirection="row">
-        <CardHeader title={title} subheader={subheader} sx={{ flex: 1 }} />
-        <Stack sx={{ paddingTop: 3, flexDirection: 'row', flex: 2, marginRight: 6 }}>
-          <Stack sx={{ width: '100%', paddingRight: 2 }}>
-            <TextField
-              value={filters.name}
-              onChange={handleFilterName}
-              placeholder="Search id / Employee name / Employee code / Employee Department..."
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Iconify icon="eva:search-fill" sx={{}} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ width: '100%' }}
-            />
-          </Stack>
-
-          <Button
-            sx={{ pt: 2, width: 200 }}
-            size="medium"
-            color="inherit"
-            onClick={() => {
-              setAddEmployee(true);
-            }}
-            endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
-          >
-            Add Employees
-          </Button>
-        </Stack>
-      </Grid>
-      <Grid sx={{ mt: 3 }}>
+      <EmployeeTableToolbar
+        filters={filters}
+        onFilters={onFilters}
+        placeHolder="Find Employee ..."
+      />
+      {/* {canReset && (
+          <ProductTableFiltersResult
+            filters={filters}
+            onFilters={onFilters}
+            //
+            onResetFilters={handleResetFilters}
+            //
+            results={dataFiltered.length}
+            sx={{ p: 2.5, pt: 0 }}
+          />
+        )} */}
+      <Grid>
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
           <TableSelectedAction
             dense={table.dense}
@@ -165,9 +180,12 @@ export default function EmployeeDetailsTable({
                     <EmployeeDetailsTableRow
                       key={row.id}
                       row={row}
-                      actions_data={ actions_data}
+                      // actions_data={actions_data}
                       table={table}
                       selected={table.selected.includes(row.id)}
+                      onDeleteRow={DeleteMutation}
+                      DeleteLoading={DeleteLoading}
+                      DeletedSuccess={DeletedSuccess}
                       onSelectRow={() => table.onSelectRow(row.id)}
                       confirm={confirm}
                     />
@@ -185,7 +203,7 @@ export default function EmployeeDetailsTable({
           openFlag={addEmployee}
           setonClose={() => setAddEmployee(false)}
           placeHolder="Add New Employee"
-          component={<addEmployee />}
+          component={<AddEmployee />}
         />
         <TablePaginationCustom
           count={dataFiltered.length}
@@ -207,10 +225,10 @@ EmployeeDetailsTable.propTypes = {
   subheader: PropTypes.string,
   employees_data: PropTypes.array,
   table: PropTypes.any,
-  actions_data: PropTypes.array
+  // actions_data: PropTypes.array
 };
 function applyFilter({ inputData, comparator, filters }) {
-  const { name } = filters;
+  const { employees_name, active } = filters;
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
@@ -220,15 +238,33 @@ function applyFilter({ inputData, comparator, filters }) {
   });
 
   inputData = stabilizedThis.map((el) => el[0]);
+  // if (status.length) {
+  //   inputData = inputData.filter((product) => status.includes(product.status));
+  // }
+  if (active !== 'All') {
+    inputData = inputData.filter((employee) => {
+      const fieldValue = employee.status ? 'Active' : 'Inactive';
+      return fieldValue && fieldValue === active;
+    });
+  }
 
-  if (name) {
+  if (employees_name) {
     inputData = inputData.filter(
       (employee) =>
-        employee.employee_name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        employee.employee_code.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        employee.employee_dept.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        employee.id.toString().toLowerCase().indexOf(name.toLowerCase()) !== -1
+        employee?.employee_name.toLowerCase().indexOf(employees_name.toLowerCase()) !== -1 ||
+        employee?.employeeCode.toLowerCase().indexOf(employees_name.toLowerCase()) !== -1 ||
+        employee?.employee_dept.toLowerCase().indexOf(employees_name.toLowerCase()) !== -1 ||
+        employee?.id.toString().toLowerCase().indexOf(employees_name.toLowerCase()) !== -1 ||
+        employee?.role.toString().toLowerCase().indexOf(employees_name.toLowerCase()) !== -1
     );
+    console.log('inputData: ', inputData);
+    // inputData = inputData.filter((employee) => {
+
+    // employee.employee_name.toLowerCase().indexOf(employees_name.toLowerCase()) !== -1 ||
+    //   employee.employee_code.toLowerCase().indexOf(employees_name.toLowerCase()) !== -1 ||
+    //   employee.employee_dept.toLowerCase().indexOf(employees_name.toLowerCase()) !== -1 ||
+    //   employee.id.toString().toLowerCase().indexOf(employees_name.toLowerCase()) !== -1;
+    // });
   }
 
   return inputData;
