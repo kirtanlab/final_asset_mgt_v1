@@ -54,13 +54,13 @@ export default function TypesDetailsTable({ title, tableLabels, Categories_Data,
         filters,
       })
     : {};
-  const {
-    mutateAsync: DeleteMutation,
-    isLoading: DeleteLoading,
-    isError: DeleteError,
-    error: ResError,
-    isSuccess: DeletedSuccess,
-  } = useDeleteType();
+  // const {
+  //   mutateAsync: DeleteMutation,
+  //   isLoading: DeleteLoading,
+  //   isError: DeleteError,
+  //   error: ResError,
+  //   isSuccess: DeletedSuccess,
+  // } = useDeleteType();
   const denseHeight = table.dense ? 56 : 76;
   const canReset =
     !!filters.name ||
@@ -145,7 +145,7 @@ export default function TypesDetailsTable({ title, tableLabels, Categories_Data,
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
                       confirm={confirm}
-                      onDeleteRow={DeleteMutation}
+                      // onDeleteRow={DeleteMutation}
                     />
                   ))}
                 <TableEmptyRows

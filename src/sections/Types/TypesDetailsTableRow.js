@@ -11,6 +11,7 @@ import {
   TableRow,
   useTheme,
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import Iconify from 'src/components/iconify';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -18,6 +19,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import CustomDialog from 'src/components/Dialog/dialog';
 import Label from 'src/components/label';
 import EditTypes from './editTypes';
+
 // import { ConfirmDialog } from 'src/components/custom-dialog';
 
 const TypesDetailsTableRow = ({
@@ -211,7 +213,7 @@ const TypesDetailsTableRow = ({
         action={
           <LoadingButton
             variant="contained"
-            loading={DeleteLoading}
+            loading={false}
             color={row?.status === true ? 'error' : 'success'}
             onClick={async () => {
               try {
